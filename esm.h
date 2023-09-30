@@ -45,6 +45,6 @@ class ESM {
     unsigned char getRegBus();
     unsigned char getDataBus();
     unsigned char getToneOut();
-    unsigned char getPC();
+    unsigned int getPC();
     unsigned char getRandOut();
 };

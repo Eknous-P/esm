@@ -139,7 +139,7 @@ unsigned char ESM::getToneOut() {
     return esm.toneOut;
 }
 
-unsigned char ESM::getPC() {
+unsigned int ESM::getPC() {
     return esm.pc;
 }
 
