@@ -28,16 +28,16 @@ ADDR|NAME=====================|DATA====
 
 */
 
-void ESM::decodeAddress(unsigned char addr, unsigned char data) {
-    switch (addr % 16) {
+void ESM::decodeRegister(unsigned char reg, unsigned char data) {
+    switch (reg % 16) {
         case 0: case 2: case 4: case 6: {
-            esm.toneConf[addr] = (esm.toneConf[addr] & 0b1111111100000000);//erase low byte
-            esm.toneConf[addr] += data;//overwrite
+            esm.toneConf[reg] = (esm.toneConf[reg] & 0b1111111100000000);//erase low byte
+            esm.toneConf[reg] += data;//overwrite
             break;
         }
         case 1: case 3 :case 5: case 7:{
-            esm.toneConf[addr] = (esm.toneConf[addr] & 0b0000000011111111);//erase high byte
-            esm.toneConf[addr] += data*256;
+            esm.toneConf[reg] = (esm.toneConf[reg] & 0b0000000011111111);//erase high byte
+            esm.toneConf[reg] += data*256;
             break;
         }
         case 8: {
@@ -127,12 +127,56 @@ unsigned short ESM::getSampleAddrBus() {
     return esm.sampleAddressBus;
 }
 
+unsigned char ESM::getRegBus() {
+    return esm.regBus;
+}
+
+unsigned char ESM::getDataBus() {
+    return esm.dataBus;
+}
+
+unsigned char ESM::getToneOut() {
+    return esm.toneOut;
+}
+
+unsigned char ESM::getPC() {
+    return esm.pc;
+}
+
 unsigned char ESM::getRandOut() {
     return (esm.lfsr0 & 0xff);
 }
 
+void ESM::reset() {
+    esm.sampleAddressBus = 0;
+    esm.regBus = 0;
+    esm.dataBus = 0;
+    esm.sampleStart = 0;
+    esm.sampleEnd = 0;
+    esm.sampleConf = 0;
+    esm.toneCounter[0] = 0;
+    esm.toneCounter[1] = 0;
+    esm.toneCounter[2] = 0;
+    esm.toneCounter[3] = 0;
+    esm.lfsr0 = 0;
+    esm.lfsr1 = 0;
+    esm.lfsr2 = 0;
+    esm.lfsr3 = 0;
+    esm.globVolume = 0;
+    esm.toneConf[0] = 0;
+    esm.toneConf[1] = 0;
+    esm.toneConf[2] = 0;
+    esm.toneConf[3] = 0;
+    esm.toneOut = 0;
+    esm.toneMask = 0;
+    esm.psgMultiplex = 0;
+    esm.psgOut = 0;
+    esm.pc = 0;
+}
+
 void ESM::tick() {
-    ESM::decodeAddress(esm.addressBus, esm.inputDataBus);
+    esm.pc++;
+    ESM::decodeRegister(esm.regBus, esm.dataBus);
     ESM::longLFSR();
     ESM::shortLFSR();
     ESM::sampleCount();

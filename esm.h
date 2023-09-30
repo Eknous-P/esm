@@ -2,8 +2,8 @@ class ESM {
     public:
     struct esm{
             /*====IO====*/
-            unsigned char inputDataBus;
-            unsigned char addressBus; //only 1st 4 bits are used
+            unsigned char dataBus;
+            unsigned char regBus; //only 1st 4 bits are used
             unsigned short sampleAddressBus;
 
             unsigned char psgOut;
@@ -25,15 +25,23 @@ class ESM {
 
             unsigned char psgMultiplex; //1st 2 bits
 
+            unsigned int pc;//prog counter?
+
     } esm;
 
-    void decodeAddress(unsigned char addr, unsigned char data);
+    void decodeRegister(unsigned char reg, unsigned char data);
     void sampleCount();
     void longLFSR();
     void shortLFSR();
     void tones();
     void tick();
 
+    void reset();
+
     unsigned short getSampleAddrBus();
+    unsigned char getRegBus();
+    unsigned char getDataBus();
+    unsigned char getToneOut();
+    unsigned char getPC();
     unsigned char getRandOut();
 };
