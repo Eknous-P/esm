@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
                 return 0;
             }
             case 0x68: {//h
-                printf("commands:\nh: this\nt: single tick\nr: set register\nd: set data\nw: write to esm\nn: run N ticks\nq: quit\n");
+                printf("commands:\nh: this\nt: single tick\nr: set register\nd: set data\nw: write to esm\nn: run N ticks\nR: reset chip\nq: quit\n");
                 break;
             }
             case 0x74: {//t
@@ -54,6 +54,15 @@ int main(int argc, char* argv[]) {
                     esm.tick();
                     printf("REG: %b | DAT: %b | PC: %d | SAD: %b | TNO: %b | RNG: %b \n",esm.getRegBus()%16,esm.getDataBus(),esm.getPC(),esm.getSampleAddrBus(),esm.getToneOut(),esm.getRandOut());
                 }
+                break;
+            }
+            case 0x52: {//R
+                esm.reset();
+                printf("REG: %b | DAT: %b | PC: %d | SAD: %b | TNO: %b | RNG: %b \n",esm.getRegBus()%16,esm.getDataBus(),esm.getPC(),esm.getSampleAddrBus(),esm.getToneOut(),esm.getRandOut());
+                break;
+            }
+            default: {
+                printf("Invalid comand!\n");
                 break;
             }
         }
