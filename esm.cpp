@@ -28,54 +28,54 @@ ADDR|NAME======================|DATA====
 
 */
 
-void ESM::decodeRegister(unsigned char reg, unsigned char data) {
-    switch (reg % 16) {
+void ESM::decodeRegister() {
+    switch (esm.regBus % 16) {
         case 0: case 2: case 4: case 6: {
-            esm.toneConf[reg] = (esm.toneConf[reg] & 0b1111111100000000);//erase low byte
-            esm.toneConf[reg] += data;//overwrite
+            esm.toneConf[esm.regBus] = (esm.toneConf[esm.regBus] & 0b1111111100000000);//erase low byte
+            esm.toneConf[esm.regBus] += esm.dataBus;//overwrite
             break;
         }
         case 1: case 3 :case 5: case 7:{
-            esm.toneConf[reg] = (esm.toneConf[reg] & 0b0000000011111111);//erase high byte
-            esm.toneConf[reg] += data*256;
+            esm.toneConf[esm.regBus] = (esm.toneConf[esm.regBus] & 0b0000000011111111);//erase high byte
+            esm.toneConf[esm.regBus] += esm.dataBus*256;
             break;
         }
         case 8: {
-            esm.toneMask = data;
+            esm.toneMask = esm.dataBus;
             break;
         }
         case 9: {
-            esm.globVolume = data;
+            esm.globVolume = esm.dataBus;
             break;
         }
         case 10: {
             esm.sampleConf = (esm.sampleConf & 0b1111111100000000);
-            esm.sampleConf += data;
+            esm.sampleConf += esm.dataBus;
             break;
         }
         case 11: {
             esm.sampleConf = (esm.sampleConf & 0b0000000011111111);
-            esm.sampleConf += data*256;
+            esm.sampleConf += esm.dataBus*256;
             break;
         }
         case 12: {
             esm.sampleStart = (esm.sampleStart & 0b1111111100000000);
-            esm.sampleStart += data;
+            esm.sampleStart += esm.dataBus;
             break;
         }
         case 13: {
             esm.sampleStart = (esm.sampleStart & 0b0000000011111111);
-            esm.sampleStart += data*256;
+            esm.sampleStart += esm.dataBus*256;
             break;
         }
         case 14: {
             esm.sampleEnd = (esm.sampleEnd & 0b1111111100000000);
-            esm.sampleEnd += data;
+            esm.sampleEnd += esm.dataBus;
             break;
         }
         case 15: {
             esm.sampleEnd = (esm.sampleEnd & 0b0000000011111111);
-            esm.sampleEnd += data*256;
+            esm.sampleEnd += esm.dataBus*256;
             break;
         }
         default: break;
@@ -147,6 +147,14 @@ unsigned char ESM::getRandOut() {
     return (esm.lfsr0 & 0xff);
 }
 
+void ESM::writeRegBus(unsigned char reg) {
+    esm.regBus = reg;
+}
+
+void ESM::writeDataBus(unsigned char data) {
+    esm.dataBus = data;
+}
+
 void ESM::reset() {
     esm.sampleAddressBus = 0;
     esm.regBus = 0;
@@ -176,7 +184,7 @@ void ESM::reset() {
 
 void ESM::tick() {
     esm.pc++;
-    ESM::decodeRegister(esm.regBus, esm.dataBus);
+    ESM::decodeRegister();
     ESM::longLFSR();
     ESM::shortLFSR();
     ESM::sampleCount();

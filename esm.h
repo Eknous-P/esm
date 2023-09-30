@@ -29,7 +29,10 @@ class ESM {
 
     } esm;
 
-    void decodeRegister(unsigned char reg, unsigned char data);
+    void writeRegBus(unsigned char reg);
+    void writeDataBus(unsigned char data);
+
+    void decodeRegister();
     void sampleCount();
     void longLFSR();
     void shortLFSR();
