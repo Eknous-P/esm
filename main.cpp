@@ -10,7 +10,7 @@ char cmd[80];
 
 int main(int argc, char* argv[]) {
     esm.reset();
-    printf("ESM test tool v0\n");
+    printf("ESM test tool v0.1\n");
     while (1) {
         printf("Enter command (h for help):");
         scanf("%79s", cmd);
