@@ -12,3 +12,10 @@
 - 16-bit address counter for external memory device (e.g. RAM)
   - 15-bit counter speed (pitch) resolution
   - loop start and end (16-bit)
+
+## building and running the testing tool
+```
+make prep
+make build
+make run
+```

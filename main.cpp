@@ -45,6 +45,16 @@ int main(int argc, char* argv[]) {
                 esm.writeDataBus(data);
                 esm.decodeRegister();
                 printf("REG: %b | DAT: %b\n", esm.getRegBus(), esm.getDataBus());
+                break;
+            }
+            case 0x6e :{//n
+                printf("Enter iterations amount (dec):");
+                scanf("%d",&iter);
+                for (unsigned int i = 0; i < iter; i++) {
+                    esm.tick();
+                    printf("REG: %b | DAT: %b | PC: %i | SAD: %b | TNO: %b \n",esm.getRegBus()%16,esm.getDataBus(),esm.getPC(),esm.getSampleAddrBus(),esm.getToneOut());
+                }
+                break;
             }
         }
     }
