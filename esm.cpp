@@ -1,5 +1,4 @@
 #include <cstdint>
-#include <cstdio>
 #include "esm.h"
 
 /*====REGISTERS (once more)====
@@ -31,14 +30,14 @@ ADDR|NAME======================|DATA====
 
 void ESM::decodeRegister() {
     switch (esm.regBus % 16) {
-        case 0: case 2: case 4: case 6:{
+        case 0: case 2: case 4: case 6: {
             esm.toneConf[esm.regBus/2] = (esm.toneConf[esm.regBus/2] & 0b1111111100000000);//erase low byte
             esm.toneConf[esm.regBus/2] += esm.dataBus;//overwrite
             break;
         }
-        case 1: case 3: case 5: case 7:{
-            esm.toneConf[esm.regBus/2] = (esm.toneConf[esm.regBus/2] & 0b0000000011111111);//erase high byte
-            esm.toneConf[esm.regBus/2] += (short)esm.dataBus*256;//same
+        case 1: case 3: case 5: case 7: {
+            esm.toneConf[(esm.regBus-1)/2] = (esm.toneConf[(esm.regBus-1)/2] & 0b0000000011111111);//erase high byte
+            esm.toneConf[(esm.regBus-1)/2] += (short)esm.dataBus*256;//same
             break;
         }
         case 8: {
@@ -111,16 +110,18 @@ void ESM::shortLFSR() {
 
 void ESM::tones() {
     unsigned short toneFreq;
-    unsigned char nToneDiv;
     unsigned char toneOutBuf;
     for (unsigned char i=0; i<4; i++) {
         esm.toneCounter[i]++;
+        esm.toneCounter[i] &= 0b0000111111111111;
         esm.toneOut = esm.toneOut & 0b11110000; //reset count outputs but not div outputs
         toneFreq = esm.toneConf[i] & 0b0000111111111111;
         if (esm.toneCounter[i] == toneFreq) {
             esm.toneOut += (1u << i);
+        }
+        if (((esm.toneOut >> i) & 1u) == 1u) {
             toneOutBuf = esm.toneOut;
-            toneOutBuf = toneOutBuf ^ (1 << (i-1));
+            toneOutBuf = toneOutBuf ^ (1 << (i+3));
             esm.toneOut = toneOutBuf;
         }
     }
@@ -163,30 +164,30 @@ void ESM::writeDataBus(unsigned char data) {
 }
 
 void ESM::reset() {
-    esm.sampleAddressBus = 0;
-    esm.regBus = 0;
-    esm.dataBus = 0;
-    esm.sampleStart = 0;
-    esm.sampleEnd = 0;
-    esm.sampleConf = 0;
-    esm.toneCounter[0] = 0;
-    esm.toneCounter[1] = 0;
-    esm.toneCounter[2] = 0;
-    esm.toneCounter[3] = 0;
-    esm.lfsr0 = 0;
-    esm.lfsr1 = 0;
-    esm.lfsr2 = 0;
-    esm.lfsr3 = 0;
-    esm.globVolume = 0;
-    esm.toneConf[0] = 0;
-    esm.toneConf[1] = 0;
-    esm.toneConf[2] = 0;
-    esm.toneConf[3] = 0;
-    esm.toneOut = 0;
-    esm.toneMask = 0;
-    esm.psgMultiplex = 0;
-    esm.psgOut = 0;
-    esm.pc = 0;
+    esm.sampleAddressBus = 0u;
+    esm.regBus = 0u;
+    esm.dataBus = 0u;
+    esm.sampleStart = 0u;
+    esm.sampleEnd = 0u;
+    esm.sampleConf = 0u;
+    esm.toneCounter[0] = 0u;
+    esm.toneCounter[1] = 0u;
+    esm.toneCounter[2] = 0u;
+    esm.toneCounter[3] = 0u;
+    esm.lfsr0 = 0u;
+    esm.lfsr1 = 0u;
+    esm.lfsr2 = 0u;
+    esm.lfsr3 = 0u;
+    esm.globVolume = 0u;
+    esm.toneConf[0] = 0u;
+    esm.toneConf[1] = 0u;
+    esm.toneConf[2] = 0u;
+    esm.toneConf[3] = 0u;
+    esm.toneOut = 0u;
+    esm.toneMask = 0u;
+    esm.psgMultiplex = 0u;
+    esm.psgOut = 0u;
+    esm.pc = 0u;
 }
 
 void ESM::tick() {
