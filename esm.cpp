@@ -32,13 +32,13 @@ ADDR|NAME======================|DATA====
 void ESM::decodeRegister() {
     switch (esm.regBus % 16) {
         case 0: case 2: case 4: case 6: {
-            esm.toneConf[esm.regBus] = (esm.toneConf[esm.regBus] & 0b1111111100000000);//erase low byte
-            esm.toneConf[esm.regBus] += esm.dataBus;//overwrite
+            esm.toneConf[esm.regBus/2] = (esm.toneConf[esm.regBus/2] & 0b1111111100000000);//erase low byte
+            esm.toneConf[esm.regBus/2] += esm.dataBus;//overwrite
             break;
         }
         case 1: case 3 :case 5: case 7:{
-            esm.toneConf[esm.regBus] = (esm.toneConf[esm.regBus] & 0b0000000011111111);//erase high byte
-            esm.toneConf[esm.regBus] += esm.dataBus*256;
+            esm.toneConf[esm.regBus/2] = (esm.toneConf[esm.regBus/2] & 0b0000000011111111);//erase high byte
+            esm.toneConf[esm.regBus/2] += esm.dataBus*256;//same
             break;
         }
         case 8: {
