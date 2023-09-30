@@ -31,14 +31,14 @@ ADDR|NAME======================|DATA====
 
 void ESM::decodeRegister() {
     switch (esm.regBus % 16) {
-        case 0: case 2: case 4: case 6: {
+        case 0: case 2: case 4: case 6:{
             esm.toneConf[esm.regBus/2] = (esm.toneConf[esm.regBus/2] & 0b1111111100000000);//erase low byte
             esm.toneConf[esm.regBus/2] += esm.dataBus;//overwrite
             break;
         }
-        case 1: case 3 :case 5: case 7:{
+        case 1: case 3: case 5: case 7:{
             esm.toneConf[esm.regBus/2] = (esm.toneConf[esm.regBus/2] & 0b0000000011111111);//erase high byte
-            esm.toneConf[esm.regBus/2] += esm.dataBus*256;//same
+            esm.toneConf[esm.regBus/2] += (short)esm.dataBus*256;//same
             break;
         }
         case 8: {
@@ -56,7 +56,7 @@ void ESM::decodeRegister() {
         }
         case 11: {
             esm.sampleConf = (esm.sampleConf & 0b0000000011111111);
-            esm.sampleConf += esm.dataBus*256;
+            esm.sampleConf += (short)esm.dataBus*256;
             break;
         }
         case 12: {
@@ -66,7 +66,7 @@ void ESM::decodeRegister() {
         }
         case 13: {
             esm.sampleStart = (esm.sampleStart & 0b0000000011111111);
-            esm.sampleStart += esm.dataBus*256;
+            esm.sampleStart += (short)esm.dataBus*256;
             break;
         }
         case 14: {
@@ -76,7 +76,7 @@ void ESM::decodeRegister() {
         }
         case 15: {
             esm.sampleEnd = (esm.sampleEnd & 0b0000000011111111);
-            esm.sampleEnd += esm.dataBus*256;
+            esm.sampleEnd += (short)esm.dataBus*256;
             break;
         }
         default: break;
