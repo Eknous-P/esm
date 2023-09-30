@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
                 return 0;
             }
             case 0x68: {//h
-                printf("commands:\nh: this\nt: single tick\nr: set register\nd: set data\nw: write to esm\nn: run N ticks\nR: reset chip\nq: quit\n");
+                printf("Commands (case sensitive):\n  h: this\n  t: single tick\n  r: set register\n  d: set data\n  w: write to esm\n  n: run N ticks\n  R: reset chip\n  q: quit\n");
                 break;
             }
             case 0x74: {//t
