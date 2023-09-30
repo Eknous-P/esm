@@ -3,28 +3,28 @@
 
 /*====REGISTERS (once more)====
 
-ADDR|NAME=====================|DATA====
-----|-------------------------|--------
-0000|TONE 1 CONFIG 1 =========|FFFFFFFF
-0001|TONE 1 CONFIG 2 =========|VVVVFFFF
-0010|TONE 2 CONFIG 1 =========|FFFFFFFF
-0011|TONE 2 CONFIG 2 =========|VVVVFFFF
-0100|TONE 3 CONFIG 1 =========|FFFFFFFF
-0101|TONE 3 CONFIG 2 =========|VVVVFFFF
-0110|TONE 4 CONFIG 1 =========|FFFFFFFF
-0111|TONE 4 CONFIG 2 =========|VVVVFFFF
-1000|GLOBAL TONE GONFIG (MASK)|NNNNDDDD
-1001|GLOBAL VOLUME ===========|VVVVVVVV *
-1010|SAMPLE CONFIG 1 =========|FFFFFFFF
-1011|SAMPLE CONFIG 2 =========|VVVVFFFF
-1100|SAMPLE LOOP START LOW ===|AAAAAAAA
-1101|SAMPLE LOOP START HIGH ==|AAAAAAAA
-1110|SAMPLE LOOP END LOW =====|AAAAAAAA
-1111|SAMPLE LOOP END HIGH ====|AAAAAAAA
+ADDR|NAME======================|DATA====
+----|--------------------------|7------0
+0000|TONE 1 CONFIG 1 ==========|FFFFFFFF
+0001|TONE 1 CONFIG 2 ==========|VVVVFFFF
+0010|TONE 2 CONFIG 1 ==========|FFFFFFFF
+0011|TONE 2 CONFIG 2 ==========|VVVVFFFF
+0100|TONE 3 CONFIG 1 ==========|FFFFFFFF
+0101|TONE 3 CONFIG 2 ==========|VVVVFFFF
+0110|TONE 4 CONFIG 1 ==========|FFFFFFFF
+0111|TONE 4 CONFIG 2 ==========|VVVVFFFF
+1000|GLOBAL TONE GONFIG (MASK)=|NNNNDDDD
+1001|GLOBAL VOLUME ============|VVVVVVVV
+1010|SAMPLE PITCH LOW + PLAYING|FFFFFFFB
+1011|SAMPLE PITCH HIGH ========|FFFFFFFF
+1100|SAMPLE LOOP START LOW ====|AAAAAAAA
+1101|SAMPLE LOOP START HIGH ===|AAAAAAAA
+1110|SAMPLE LOOP END LOW ======|AAAAAAAA
+1111|SAMPLE LOOP END HIGH =====|AAAAAAAA
 ---------------------------------------
 (F)requency    (D)ivider
 (V)olume       (A)ddress
-(N)oise
+(N)oise        (B)Playing
 
 */
 
@@ -85,7 +85,7 @@ void ESM::decodeRegister(unsigned char reg, unsigned char data) {
 void ESM::sampleCount() {
     esm.sampleAddressBus++;
 
-    if ((esm.sampleAddressBus > esm.sampleEnd) && ((esm.sampleConf << 4) == 0)) {
+    if ((esm.sampleAddressBus > esm.sampleEnd) && ((esm.sampleConf & 0b1u) == 0u)) {
         esm.sampleAddressBus = esm.sampleStart;
     }
     else if ((esm.sampleConf << 4) > 0) {

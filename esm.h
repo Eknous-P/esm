@@ -15,7 +15,7 @@ class ESM {
             unsigned char globVolume;
 
             unsigned short toneConf[4]; //bits 1-12: freq divide, bits 13-16: volume
-            unsigned short sampleConf; //same as above
+            unsigned short sampleConf; // bit 1: sample playing, bits 2-16: sample pitch freq divide
             unsigned char toneMask; // bits 1-4: output divide, bits 5-8: noise mode
 
             unsigned short toneCounter[4]; //only 1st 12 bits
