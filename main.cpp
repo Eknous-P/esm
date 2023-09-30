@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
             }
             case 0x74: {//t
                 esm.tick();
-                printf("REG: %b | DAT: %b | PC: %d | SAD: %b | TCF: %b/%b/%b/%b | TNO: %b | RNG: %b \n",esm.getRegBus()%16,esm.getDataBus(),esm.getPC(),esm.getSampleAddrBus(),esm.getToneConf(3),esm.getToneConf(2),esm.getToneConf(1),esm.getToneConf(0),esm.getToneOut(),esm.getRandOut());
+                printf("REG: %b | DAT: %b | PC: %d | SAD: %b | TCF: %b/%b/%b/%b | TCN: %b/%b/%b/%b | TNO: %b | RNG: %b \n",esm.getRegBus()%16,esm.getDataBus(),esm.getPC(),esm.getSampleAddrBus(),esm.getToneConf(3),esm.getToneConf(2),esm.getToneConf(1),esm.getToneConf(0),esm.getToneCounter(3),esm.getToneCounter(2),esm.getToneCounter(1),esm.getToneCounter(0),esm.getToneOut(),esm.getRandOut());
                 break;
             }
             case 0x72: {//r
@@ -52,13 +52,13 @@ int main(int argc, char* argv[]) {
                 scanf("%d",&iter);
                 for (unsigned int i = 0; i < iter; i++) {
                     esm.tick();
-                    printf("REG: %b | DAT: %b | PC: %d | SAD: %b | TCF: %b/%b/%b/%b | TNO: %b | RNG: %b \n",esm.getRegBus()%16,esm.getDataBus(),esm.getPC(),esm.getSampleAddrBus(),esm.getToneConf(3),esm.getToneConf(2),esm.getToneConf(1),esm.getToneConf(0),esm.getToneOut(),esm.getRandOut());
+                    printf("REG: %b | DAT: %b | PC: %d | SAD: %b | TCF: %b/%b/%b/%b | TCN: %b/%b/%b/%b | TNO: %b | RNG: %b \n",esm.getRegBus()%16,esm.getDataBus(),esm.getPC(),esm.getSampleAddrBus(),esm.getToneConf(3u),esm.getToneConf(2u),esm.getToneConf(1u),esm.getToneCounter(0u),esm.getToneCounter(3u),esm.getToneCounter(2u),esm.getToneCounter(1u),esm.getToneConf(0u),esm.getToneOut(),esm.getRandOut());
                 }
                 break;
             }
             case 0x52: {//R
                 esm.reset();
-                printf("REG: %b | DAT: %b | PC: %d | SAD: %b | TCF: %b/%b/%b/%b | TNO: %b | RNG: %b \n",esm.getRegBus()%16,esm.getDataBus(),esm.getPC(),esm.getSampleAddrBus(),esm.getToneConf(3),esm.getToneConf(2),esm.getToneConf(1),esm.getToneConf(0),esm.getToneOut(),esm.getRandOut());
+                printf("REG: %b | DAT: %b | PC: %d | SAD: %b | TCF: %b/%b/%b/%b | TCN: %b/%b/%b/%b | TNO: %b | RNG: %b \n",esm.getRegBus()%16,esm.getDataBus(),esm.getPC(),esm.getSampleAddrBus(),esm.getToneConf(3u),esm.getToneConf(2u),esm.getToneConf(1u),esm.getToneCounter(0u),esm.getToneCounter(3u),esm.getToneCounter(2u),esm.getToneCounter(1u),esm.getToneConf(0u),esm.getToneOut(),esm.getRandOut());
                 break;
             }
             default: {

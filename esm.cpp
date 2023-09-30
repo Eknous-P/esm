@@ -31,13 +31,13 @@ ADDR|NAME======================|DATA====
 void ESM::decodeRegister() {
     switch (esm.regBus % 16) {
         case 0: case 2: case 4: case 6: {
-            esm.toneConf[esm.regBus/2] = (esm.toneConf[esm.regBus/2] & 0b1111111100000000);//erase low byte
-            esm.toneConf[esm.regBus/2] += esm.dataBus;//overwrite
+            esm.toneConf[esm.regBus >> 1] &= 0b1111111100000000;//erase low byte
+            esm.toneConf[esm.regBus >> 1] += esm.dataBus;//overwrite
             break;
         }
         case 1: case 3: case 5: case 7: {
-            esm.toneConf[(esm.regBus-1)/2] = (esm.toneConf[(esm.regBus-1)/2] & 0b0000000011111111);//erase high byte
-            esm.toneConf[(esm.regBus-1)/2] += (short)esm.dataBus*256;//same
+            esm.toneConf[(esm.regBus-1) >> 1] &= 0b0000000011111111;//erase high byte
+            esm.toneConf[(esm.regBus-1) >> 1] += ((short)esm.dataBus) << 8;//same
             break;
         }
         case 8: {
@@ -102,22 +102,23 @@ void ESM::longLFSR() {
 }
 
 void ESM::shortLFSR() {
-    unsigned char xor2 = ((esm.lfsr2 >> 4) ^ (esm.lfsr2 >> 3) ^ (esm.lfsr2 >> 1) ^ esm.lfsr2) & 1u;
-    unsigned char xor3 = ((esm.lfsr3 >> 4) ^ (esm.lfsr3 >> 3) ^ (esm.lfsr3 >> 1) ^ esm.lfsr3) & 1u;
+    uint8_t xor2 = ((esm.lfsr2 >> 4) ^ (esm.lfsr2 >> 3) ^ (esm.lfsr2 >> 1) ^ esm.lfsr2) & 1u;
+    uint8_t xor3 = ((esm.lfsr3 >> 4) ^ (esm.lfsr3 >> 3) ^ (esm.lfsr3 >> 1) ^ esm.lfsr3) & 1u;
     esm.lfsr2 = (esm.lfsr2 >> 1) | (!xor2 << 7);
     esm.lfsr3 = (esm.lfsr3 >> 1) | (!xor3 << 7);
 }
 
 void ESM::tones() {
-    unsigned short toneFreq;
-    unsigned char toneOutBuf;
-    for (unsigned char i=0; i<4; i++) {
-        esm.toneCounter[i]++;
+    uint16_t toneFreq;
+    uint8_t toneOutBuf;
+    for (uint8_t i=0; i<4; i++) {
+        esm.toneCounter[i]+=1u;
         esm.toneCounter[i] &= 0b0000111111111111;
         esm.toneOut = esm.toneOut & 0b11110000; //reset count outputs but not div outputs
         toneFreq = esm.toneConf[i] & 0b0000111111111111;
-        if (esm.toneCounter[i] == toneFreq) {
+        if (esm.toneCounter[i] > toneFreq) {
             esm.toneOut += (1u << i);
+            esm.toneCounter[i] = 0u;
         }
         if (((esm.toneOut >> i) & 1u) == 1u) {
             toneOutBuf = esm.toneOut;
@@ -127,23 +128,27 @@ void ESM::tones() {
     }
 }
 
-unsigned short ESM::getSampleAddrBus() {
+uint16_t ESM::getSampleAddrBus() {
     return esm.sampleAddressBus;
 }
 
-unsigned char ESM::getRegBus() {
+uint8_t ESM::getRegBus() {
     return esm.regBus;
 }
 
-unsigned char ESM::getDataBus() {
+uint8_t ESM::getDataBus() {
     return esm.dataBus;
 }
 
-unsigned char ESM::getToneConf(unsigned char ch) {
+uint8_t ESM::getToneConf(uint8_t ch) {
     return esm.toneConf[ch];
 }
 
-unsigned char ESM::getToneOut() {
+uint8_t ESM::getToneCounter(uint8_t ch) {
+    return esm.toneCounter[ch];
+}
+
+uint8_t ESM::getToneOut() {
     return esm.toneOut;
 }
 
@@ -151,15 +156,15 @@ unsigned int ESM::getPC() {
     return esm.pc;
 }
 
-unsigned char ESM::getRandOut() {
+uint8_t ESM::getRandOut() {
     return (esm.lfsr0 & 0xff);
 }
 
-void ESM::writeRegBus(unsigned char reg) {
+void ESM::writeRegBus(uint8_t reg) {
     esm.regBus = reg;
 }
 
-void ESM::writeDataBus(unsigned char data) {
+void ESM::writeDataBus(uint8_t data) {
     esm.dataBus = data;
 }
 
