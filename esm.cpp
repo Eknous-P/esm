@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <cstdio>
 #include "esm.h"
 
 /*====REGISTERS (once more)====
@@ -119,12 +120,7 @@ void ESM::tones() {
         if (esm.toneCounter[i] == toneFreq) {
             esm.toneOut += (1u << i);
             toneOutBuf = esm.toneOut;
-            nToneDiv = (esm.toneOut >> (i+4)) & 1u;
-            if (nToneDiv == 0) {
-                toneOutBuf += (1u << (i+4));
-            } else {
-                toneOutBuf -= (1u << (i+4));
-            }
+            toneOutBuf = toneOutBuf ^ (1 << (i-1));
             esm.toneOut = toneOutBuf;
         }
     }
@@ -140,6 +136,10 @@ unsigned char ESM::getRegBus() {
 
 unsigned char ESM::getDataBus() {
     return esm.dataBus;
+}
+
+unsigned char ESM::getToneConf(unsigned char ch) {
+    return esm.toneConf[ch];
 }
 
 unsigned char ESM::getToneOut() {

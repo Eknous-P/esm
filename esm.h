@@ -44,6 +44,7 @@ class ESM {
     unsigned short getSampleAddrBus();
     unsigned char getRegBus();
     unsigned char getDataBus();
+    unsigned char getToneConf(unsigned char ch);
     unsigned char getToneOut();
     unsigned int getPC();
     unsigned char getRandOut();
