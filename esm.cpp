@@ -110,15 +110,22 @@ void ESM::shortLFSR() {
 
 void ESM::tones() {
     unsigned short toneFreq;
+    unsigned char nToneDiv;
     unsigned char toneOutBuf;
     for (unsigned char i=0; i<4; i++) {
         esm.toneCounter[i]++;
         esm.toneOut = esm.toneOut & 0b11110000; //reset count outputs but not div outputs
         toneFreq = esm.toneConf[i] & 0b0000111111111111;
         if (esm.toneCounter[i] == toneFreq) {
-            esm.toneOut += 1u << i;
+            esm.toneOut += (1u << i);
             toneOutBuf = esm.toneOut;
-            // toneOut
+            nToneDiv = (esm.toneOut >> (i+4)) & 1u;
+            if (nToneDiv == 0) {
+                toneOutBuf += (1u << (i+4));
+            } else {
+                toneOutBuf -= (1u << (i+4));
+            }
+            esm.toneOut = toneOutBuf;
         }
     }
 }
