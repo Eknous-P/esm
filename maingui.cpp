@@ -33,6 +33,27 @@
 #endif
 
 ESM esm;
+const char * regDesc[16] = {
+    "TONE 1 CONFIG 1",
+    "TONE 1 CONFIG 2",
+    "TONE 2 CONFIG 1",
+    "TONE 2 CONFIG 2",
+    "TONE 3 CONFIG 1",
+    "TONE 3 CONFIG 2",
+    "TONE 4 CONFIG 1",
+    "TONE 4 CONFIG 2",
+    "TONE MASK",
+    "TONE VOLUME",
+    "SAMPLE PITCH LOW",
+    "SAMPLE PITCH HIGH",
+    "SAMPLE LOOP START LOW",
+    "SAMPLE LOOP START HIGH",
+    "SAMPLE LOOP END LOW",
+    "SAMPLE LOOP END HIGH"
+};
+
+uint8_t u8_one = 1u;
+uint8_t reg=0u, dat=0u;
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -106,8 +127,8 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::Begin("REGISTERS");
-            if(ImGui::BeginTable("REGISTERS",2)){
+        ImGui::Begin("REGISTER STATUS");
+            if(ImGui::BeginTable("REGISTERS",3)){
                 char strbuf[8];
                 for (uint8_t i=0; i<16; i++) {
                     ImGui::TableNextRow();
@@ -117,14 +138,14 @@ int main(int, char**)
                     ImGui::TableNextColumn();
                     sprintf(strbuf, "%b", esm.getRegStat(i));
                     ImGui::Text(strbuf);
+                    ImGui::TableNextColumn();
+                    ImGui::Text(regDesc[i]);
                 }
                 ImGui::EndTable();
             }
 
         ImGui::End();
         ImGui::Begin("INPUT");
-            uint8_t u8_one = 1u;
-            uint8_t reg, dat;
             ImGui::InputScalar("REGISTER", ImGuiDataType_U8, &reg, &u8_one, NULL, "%u");
             ImGui::InputScalar("DATA", ImGuiDataType_U8, &dat, &u8_one, NULL, "%u");
             reg &= 0xf;

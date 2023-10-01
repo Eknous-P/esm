@@ -14,8 +14,19 @@
   - loop start and end (16-bit)
 
 ## building and running the testing tool
+### - CLI
 ```
 make prep
-make build
-make run
+make buildcli
+make runcli
 ```
+### - GUI
+requirements:
+- glfw
+- opengl3
+```
+make prep
+make buildgui
+make rungui
+```
+
