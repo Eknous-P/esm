@@ -66,3 +66,6 @@ clean:
 
 runcli:
 	$(BUILDDIR)/esmtestcli
+
+rungui:
+	$(BUILDDIR)/esmtestgui
