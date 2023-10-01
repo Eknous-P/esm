@@ -1,8 +1,8 @@
 cc=/usr/bin/g++
 cflags= -c -Wall
 
-build: main esm
-	$(cc) ./build/obj/esm.o ./build/obj/main.o -o ./build/esmtest
+buildcli: maincli esm
+	$(cc) ./build/obj/esm.o ./build/obj/maincli.o -o ./build/esmtestcli
 
 prep:
 	mkdir build
@@ -11,11 +11,11 @@ prep:
 esm: 
 	$(cc) $(cflags) ./esm.cpp -o ./build/obj/esm.o
 
-main:
-	$(cc) $(cflags) ./main.cpp -o ./build/obj/main.o
+maincli:
+	$(cc) $(cflags) ./maincli.cpp -o ./build/obj/maincli.o
 
 clean:
 	rm -rf ./build/*.o
 
 run:
-	./build/esmtest
+	./build/esmtestcli
