@@ -140,7 +140,7 @@ uint8_t ESM::getDataBus() {
     return esm.dataBus;
 }
 
-uint8_t ESM::getToneConf(uint8_t ch) {
+uint16_t ESM::getToneConf(uint8_t ch) {
     return esm.toneConf[ch];
 }
 
