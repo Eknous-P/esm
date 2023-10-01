@@ -54,6 +54,8 @@ const char * regDesc[16] = {
 
 uint8_t u8_one = 1u;
 uint8_t reg=0u, dat=0u;
+char strbuf[8];
+bool emuRunning = false;
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -127,9 +129,17 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        if (emuRunning) {
+            esm.decodeRegister();
+            esm.tick();
+        }
+
         ImGui::Begin("REGISTER STATUS");
             if(ImGui::BeginTable("REGISTERS",3)){
-                char strbuf[8];
+                ImGui::TableSetupColumn("REG",ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("VALUE",ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("DESC",ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableHeadersRow();
                 for (uint8_t i=0; i<16; i++) {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -157,7 +167,37 @@ int main(int, char**)
                 esm.decodeRegister();
             }
         ImGui::End();
+        ImGui::Begin("OUTPUT");
+            if (ImGui::BeginTable("OUTPUTS", 3)){
+                ImGui::TableSetupColumn("",ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("BIN",ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("HEX",ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableHeadersRow();
+                ImGui::TableNextRow();
 
+                ImGui::TableNextColumn();
+                ImGui::AlignTextToFramePadding();
+                ImGui::Text("TONE OUTPUTS");
+                ImGui::TableNextColumn();
+                ImGui::BeginDisabled();
+                for (uint8_t i=8; i>0; i--) {
+                    static bool bit = (esm.getToneOut() >> (i-1)) & 1u;
+                    ImGui::Checkbox("",&bit);
+                    ImGui::SameLine();
+                }
+                ImGui::EndDisabled();
+                ImGui::TableNextColumn();
+                sprintf(strbuf, "%x", esm.getToneOut());
+                ImGui::Text(strbuf);
+                ImGui::EndTable();
+            }
+        ImGui::End();
+        ImGui::Begin("CONTROL");
+            // emuRunning = false;
+            if (ImGui::Button("TICK")) emuRunning = true;
+            ImGui::SameLine();
+            ImGui::Checkbox("RUNNING", &emuRunning);
+        ImGui::End();
 
 
         // Rendering
