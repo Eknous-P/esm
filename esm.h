@@ -28,6 +28,8 @@ class ESM {
 
             uint32_t pc;//prog counter?
 
+            uint8_t regStat[16]; //all registers
+
     } esm;
 
     void writeRegBus(uint8_t reg);
@@ -50,4 +52,5 @@ class ESM {
     uint8_t getToneOut();
     uint32_t getPC();
     uint8_t getRandOut();
+    uint8_t getRegStat(uint8_t reg);
 };
