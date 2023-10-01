@@ -40,7 +40,7 @@ class ESM {
     void longLFSR();
     void shortLFSR();
     void tones();
-    void tick();
+    char tick();
 
     void reset();
 

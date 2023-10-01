@@ -115,6 +115,8 @@ int main(int, char**)
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    esm.reset();
+
     // Main loop
 #ifdef __EMSCRIPTEN__
     EMSCRIPTEN_MAINLOOP_BEGIN
@@ -128,11 +130,6 @@ int main(int, char**)
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
-        if (emuRunning) {
-            esm.decodeRegister();
-            esm.tick();
-        }
 
         ImGui::Begin("REGISTER STATUS");
             if(ImGui::BeginTable("REGISTERS",3)){
@@ -173,30 +170,61 @@ int main(int, char**)
                 ImGui::TableSetupColumn("BIN",ImGuiTableColumnFlags_WidthFixed);
                 ImGui::TableSetupColumn("HEX",ImGuiTableColumnFlags_WidthFixed);
                 ImGui::TableHeadersRow();
-                ImGui::TableNextRow();
 
+                ImGui::TableNextRow();
                 ImGui::TableNextColumn();
                 ImGui::AlignTextToFramePadding();
                 ImGui::Text("TONE OUTPUTS");
                 ImGui::TableNextColumn();
                 ImGui::BeginDisabled();
                 for (uint8_t i=8; i>0; i--) {
-                    static bool bit = (esm.getToneOut() >> (i-1)) & 1u;
-                    ImGui::Checkbox("",&bit);
+                    bool bits[8];
+                    bits[i] = ((esm.getToneOut() >> (i-1)) & 1u) == 1;
+                    ImGui::Checkbox("",&bits[i]);
                     ImGui::SameLine();
                 }
                 ImGui::EndDisabled();
                 ImGui::TableNextColumn();
                 sprintf(strbuf, "%x", esm.getToneOut());
                 ImGui::Text(strbuf);
+
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::AlignTextToFramePadding();
+                ImGui::Text("PRNG OUTPUT");
+                ImGui::TableNextColumn();
+                ImGui::BeginDisabled();
+                for (uint8_t i=8; i>0; i--) {
+                    bool bits[8];
+                    bits[i] = ((esm.getRandOut() >> (i-1)) & 1u) == 1;
+                    ImGui::Checkbox("",&bits[i]);
+                    ImGui::SameLine();
+                }
+                ImGui::EndDisabled();
+                ImGui::TableNextColumn();
+                sprintf(strbuf, "%x", esm.getRandOut());
+                ImGui::Text(strbuf);
+
                 ImGui::EndTable();
             }
         ImGui::End();
         ImGui::Begin("CONTROL");
             // emuRunning = false;
-            if (ImGui::Button("TICK")) emuRunning = true;
+            if (ImGui::Button("TICK")) {
+                esm.decodeRegister();
+                esm.tick();
+            }
             ImGui::SameLine();
             ImGui::Checkbox("RUNNING", &emuRunning);
+
+            if (emuRunning) {
+                esm.decodeRegister();
+                esm.tick();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("RESET")) {
+                esm.reset();
+            }
         ImGui::End();
 
 

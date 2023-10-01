@@ -117,13 +117,13 @@ void ESM::tones() {
         esm.toneCounter[i] &= 0b0000111111111111;
         esm.toneOut = esm.toneOut & 0b11110000; //reset count outputs but not div outputs
         toneDiv = (esm.toneConf[i] & 0b0000111111111111);
-        if (esm.toneCounter[i] > toneDiv) {
+        if (esm.toneCounter[i] > toneDiv - 1u) {
             esm.toneOut += (1u << i);
             esm.toneCounter[i] = 0u;
-        }
-        if (((esm.toneOut >> i) & 1u) == 1u) {
+        // }
+        // if (((esm.toneOut >> i) & 1u) == 1u) {
             toneOutBuf = esm.toneOut;
-            toneOutBuf = toneOutBuf ^ (1 << (i+3));
+            toneOutBuf = toneOutBuf ^ (1 << (i+4));
             esm.toneOut = toneOutBuf;
         }
     }
@@ -198,13 +198,19 @@ void ESM::reset() {
     esm.psgMultiplex = 0u;
     esm.psgOut = 0u;
     esm.pc = 0u;
+    ESM::writeDataBus(0);
+    for (uint8_t i=0;i<16;i++){
+        ESM::writeRegBus(i);
+        ESM::decodeRegister();
+    }
 }
 
-void ESM::tick() {
+char ESM::tick() {
     esm.pc++;
     ESM::decodeRegister();
     ESM::longLFSR();
     ESM::shortLFSR();
     ESM::sampleCount();
     ESM::tones();
+    return 0;
 }
