@@ -46,7 +46,7 @@ buildcli: maincli esm
 	$(CXX) $(OBJDIR)/esm.o $(OBJDIR)/maincli.o -o $(BUILDDIR)/esmtestcli
 
 buildgui: esm maingui imgui_main imgui_demo imgui_draw imgui_tables imgui_widgets imgui_be_glfw imgui_be_opgl3
-	$(CXX) $(CXXFLAGS) $(OBJDIR)/maingui.o $(OBJDIR)/esm.o $(OBJDIR)/imgui.o $(OBJDIR)/imgui_demo.o $(OBJDIR)/imgui_draw.o $(OBJDIR)/imgui_tables.o $(OBJDIR)/imgui_widgets.o $(OBJDIR)/imgui_glfw.o $(OBJDIR)/imgui_opgl3.o -o $(BUILDDIR)/esmtestgui
+	$(CXX) $(CXXFLAGS) $(OBJDIR)/maingui.o $(OBJDIR)/esm.o $(OBJDIR)/imgui.o $(OBJDIR)/imgui_demo.o $(OBJDIR)/imgui_draw.o $(OBJDIR)/imgui_tables.o $(OBJDIR)/imgui_widgets.o $(OBJDIR)/imgui_glfw.o $(OBJDIR)/imgui_opgl3.o -o $(BUILDDIR)/esmtestgui $(LIBS)
 
 prep:
 	mkdir build
