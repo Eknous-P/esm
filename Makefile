@@ -17,5 +17,5 @@ maincli:
 clean:
 	rm -rf ./build/*.o
 
-run:
+runcli:
 	./build/esmtestcli
