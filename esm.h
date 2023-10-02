@@ -37,8 +37,6 @@ class ESM {
 
     void decodeRegister();
     void sampleCount();
-    void longLFSR();
-    void shortLFSR();
     void tones();
     char tick();
 
@@ -51,6 +49,7 @@ class ESM {
     uint8_t getToneCounter(uint8_t ch);
     uint8_t getToneOut();
     uint32_t getPC();
+    uint32_t getLFSR(uint8_t n);
     uint8_t getRandOut();
     uint8_t getRegStat(uint8_t reg);
 };

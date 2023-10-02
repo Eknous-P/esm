@@ -94,21 +94,6 @@ void ESM::sampleCount() {
     }
 }
 
-void ESM::longLFSR() {
-    uint32_t xor0 = ((esm.lfsr0 >> 25) ^ (esm.lfsr0 >> 19) ^ (esm.lfsr0 >> 11) ^ (esm.lfsr0 >> 9)) & 1u;
-    uint32_t xor1 = ((esm.lfsr1 >> 25) ^ (esm.lfsr1 >> 19) ^ (esm.lfsr1 >> 11) ^ (esm.lfsr1 >> 9)) & 1u;
-    //shift (why did i write shirt before???????)
-    esm.lfsr0 = (esm.lfsr0 >> 1) | (!xor0 << 31);
-    esm.lfsr1 = (esm.lfsr1 >> 1) | (!xor1 << 31);
-}
-
-void ESM::shortLFSR() {
-    uint8_t xor2 = ((esm.lfsr2 >> 4) ^ (esm.lfsr2 >> 3) ^ (esm.lfsr2 >> 1) ^ esm.lfsr2) & 1u;
-    uint8_t xor3 = ((esm.lfsr3 >> 4) ^ (esm.lfsr3 >> 3) ^ (esm.lfsr3 >> 1) ^ esm.lfsr3) & 1u;
-    esm.lfsr2 = (esm.lfsr2 >> 1) | (!xor2 << 7);
-    esm.lfsr3 = (esm.lfsr3 >> 1) | (!xor3 << 7);
-}
-
 void ESM::tones() {
     uint16_t toneDiv;
     uint8_t toneOutBuf;
@@ -118,13 +103,36 @@ void ESM::tones() {
         esm.toneOut = esm.toneOut & 0b11110000; //reset count outputs but not div outputs
         toneDiv = (esm.toneConf[i] & 0b0000111111111111);
         if (esm.toneCounter[i] > toneDiv - 1u) {
-            esm.toneOut += (1u << i);
             esm.toneCounter[i] = 0u;
         // }
         // if (((esm.toneOut >> i) & 1u) == 1u) {
             toneOutBuf = esm.toneOut;
             toneOutBuf = toneOutBuf ^ (1 << (i+4));
             esm.toneOut = toneOutBuf;
+            esm.toneOut = toneOutBuf;
+            switch (i) {
+                case 0: {
+                    uint32_t xor0 = ((esm.lfsr0 >> 25) ^ (esm.lfsr0 >> 19) ^ (esm.lfsr0 >> 11) ^ (esm.lfsr0 >> 9)) & 1u;
+                    esm.lfsr0 = (esm.lfsr0 >> 1) | (!xor0 << 31);
+                    break;
+                }
+                case 1: {
+                    uint32_t xor1 = ((esm.lfsr1 >> 25) ^ (esm.lfsr1 >> 19) ^ (esm.lfsr1 >> 11) ^ (esm.lfsr1 >> 9)) & 1u;
+                    esm.lfsr1 = (esm.lfsr1 >> 1) | (!xor1 << 31);
+                    break;
+                }
+                case 2: {
+                    uint8_t xor2 = ((esm.lfsr2 >> 4) ^ (esm.lfsr2 >> 3) ^ (esm.lfsr2 >> 1) ^ esm.lfsr2) & 1u;
+                    esm.lfsr2 = (esm.lfsr2 >> 1) | (!xor2 << 7);
+                    break;
+                }
+                case 3: {
+                    uint8_t xor3 = ((esm.lfsr3 >> 4) ^ (esm.lfsr3 >> 3) ^ (esm.lfsr3 >> 1) ^ esm.lfsr3) & 1u;
+                    esm.lfsr3 = (esm.lfsr3 >> 1) | (!xor3 << 7);
+                    break;
+                }
+                default: break;
+            }
         }
     }
 }
@@ -155,6 +163,16 @@ uint8_t ESM::getToneOut() {
 
 uint32_t ESM::getPC() {
     return esm.pc;
+}
+
+uint32_t ESM::getLFSR(uint8_t n) {
+    switch (n) {
+        case 0: return esm.lfsr0; break;
+        case 1: return esm.lfsr1; break;
+        case 2: return esm.lfsr2; break;
+        case 3: return esm.lfsr3; break;
+        default: return 0xffff; break; //wrong number
+    }
 }
 
 uint8_t ESM::getRandOut() {
@@ -208,8 +226,6 @@ void ESM::reset() {
 char ESM::tick() {
     esm.pc++;
     ESM::decodeRegister();
-    ESM::longLFSR();
-    ESM::shortLFSR();
     ESM::sampleCount();
     ESM::tones();
     return 0;
