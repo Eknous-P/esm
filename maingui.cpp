@@ -188,22 +188,22 @@ int main(int, char**)
                 sprintf(strbuf, "%x", esm.getToneOut());
                 ImGui::Text(strbuf);
 
-                // ImGui::TableNextRow();
-                // ImGui::TableNextColumn();
-                // ImGui::AlignTextToFramePadding();
-                // ImGui::Text("PRNG OUTPUT");
-                // ImGui::TableNextColumn();
-                // ImGui::BeginDisabled();
-                // for (uint8_t i=8; i>0; i--) {
-                //     bool bits[8];
-                //     bits[i] = ((esm.getRandOut() >> (i-1)) & 1u) == 1;
-                //     ImGui::Checkbox("",&bits[i]);
-                //     ImGui::SameLine();
-                // }
-                // ImGui::EndDisabled();
-                // ImGui::TableNextColumn();
-                // sprintf(strbuf, "%x", esm.getRandOut());
-                // ImGui::Text(strbuf);
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::AlignTextToFramePadding();
+                ImGui::Text("PRNG OUTPUT");
+                ImGui::TableNextColumn();
+                ImGui::BeginDisabled();
+                for (uint8_t i=8; i>0; i--) {
+                    bool bits[8];
+                    bits[i] = ((esm.getRandOut() >> (i-1)) & 1u) == 1;
+                    ImGui::Checkbox("",&bits[i]);
+                    ImGui::SameLine();
+                }
+                ImGui::EndDisabled();
+                ImGui::TableNextColumn();
+                sprintf(strbuf, "%x", esm.getRandOut());
+                ImGui::Text(strbuf);
 
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
@@ -211,8 +211,8 @@ int main(int, char**)
                 ImGui::Text("PROGRAM COUNTER");
                 ImGui::TableNextColumn();
                 ImGui::BeginDisabled();
-                for (uint8_t i=16; i>0; i--) {
-                    bool bits[16];
+                for (uint8_t i=32; i>0; i--) {
+                    bool bits[32];
                     bits[i] = ((esm.getPC() >> (i-1)) & 1u) == 1;
                     ImGui::Checkbox("",&bits[i]);
                     ImGui::SameLine();
