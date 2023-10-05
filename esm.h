@@ -52,4 +52,6 @@ class ESM {
     uint32_t getLFSR(uint8_t n);
     uint8_t getRandOut();
     uint8_t getRegStat(uint8_t reg);
+
+    const char * getEmuVersion();
 };

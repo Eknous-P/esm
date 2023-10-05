@@ -1,6 +1,8 @@
 #include <cstdint>
 #include "esm.h"
 
+#define EMU_VERSION "v0.2"
+
 /*====REGISTERS (once more)====
 
 ADDR|NAME======================|DATA====
@@ -96,7 +98,6 @@ void ESM::sampleCount() {
 
 void ESM::tones() {
     uint16_t toneDiv;
-    uint8_t toneOutBuf;
     for (uint8_t i=0; i<4; i++) {
         esm.toneCounter[i]+=1u;
         esm.toneCounter[i] &= 0b0000111111111111;
@@ -104,12 +105,7 @@ void ESM::tones() {
         toneDiv = (esm.toneConf[i] & 0b0000111111111111);
         if (esm.toneCounter[i] > toneDiv - 1u) {
             esm.toneCounter[i] = 0u;
-        // }
-        // if (((esm.toneOut >> i) & 1u) == 1u) {
-            toneOutBuf = esm.toneOut;
-            toneOutBuf = toneOutBuf ^ (1 << (i+4));
-            esm.toneOut = toneOutBuf;
-            esm.toneOut = toneOutBuf;
+            esm.toneOut ^= (1u << (i+4));
             switch (i) {
                 case 0: {
                     uint32_t xor0 = ((esm.lfsr0 >> 25) ^ (esm.lfsr0 >> 19) ^ (esm.lfsr0 >> 11) ^ (esm.lfsr0 >> 9)) & 1u;
@@ -229,4 +225,8 @@ char ESM::tick() {
     ESM::sampleCount();
     ESM::tones();
     return 0;
+}
+
+const char * getEmuVersion() {
+    return EMU_VERSION;
 }
