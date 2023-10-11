@@ -56,6 +56,7 @@ uint8_t u8_one = 1u;
 uint8_t reg=0u, dat=0u;
 char strbuf[8];
 bool emuRunning = false;
+bool emuRunningTemp = emuRunning;
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -126,7 +127,11 @@ int main(int, char**)
     {
         glfwPollEvents();
 
-        // Start the Dear ImGui frame
+        if (emuRunning) {
+            esm.decodeRegister();
+            esm.tick();
+        }
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -164,6 +169,7 @@ int main(int, char**)
                 esm.decodeRegister();
             }
         ImGui::End();
+        if (emuRunning) emuRunningTemp = true;
         ImGui::Begin("INTERNAL PINS");
             if (ImGui::BeginTable("INTERNAL PINS", 3)){
                 ImGui::TableSetupColumn("",ImGuiTableColumnFlags_WidthFixed);
@@ -252,25 +258,19 @@ int main(int, char**)
                 ImGui::EndTable();
             }
         ImGui::End();
+        if (emuRunningTemp) emuRunning=true;
         ImGui::Begin("CONTROL");
-            // emuRunning = false;
             if (ImGui::Button("TICK")) {
                 esm.decodeRegister();
                 esm.tick();
             }
             ImGui::SameLine();
             ImGui::Checkbox("RUNNING", &emuRunning);
-
-            if (emuRunning) {
-                esm.decodeRegister();
-                esm.tick();
-            }
+            emuRunningTemp=emuRunning;
             ImGui::SameLine();
-            if (ImGui::Button("RESET")) {
-                esm.reset();
-            }
-        ImGui::End();
 
+            if (ImGui::Button("RESET")) esm.reset();
+        ImGui::End();
 
         // Rendering
         ImGui::Render();
