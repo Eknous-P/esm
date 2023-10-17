@@ -4,13 +4,14 @@
 BUILDDIR = ./build
 OBJDIR = ./build/obj
 GUIDIR = ./gui
+EMUDIR = ./esm_emu
 
 #shamefully copied from the examples
 IMGUI_DIR = ./imgui
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -std=c++11 -I . -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(GUIDIR)
+CXXFLAGS = -std=c++11 -I . -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(GUIDIR) -I$(EMUDIR)
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
@@ -54,7 +55,7 @@ prep:
 	mkdir build/obj
 
 esm: 
-	$(CXX) -c ./esm.cpp -o $(OBJDIR)/esm.o
+	$(CXX) -c $(CXXFLAGS) $(EMUDIR)/esmdebug.cpp -o $(OBJDIR)/esm.o
 
 guistuff:
 	$(CXX) -c $(CXXFLAGS) $(GUIDIR)/guistuff.cpp -o $(OBJDIR)/guistuff.o
@@ -63,7 +64,7 @@ guiwindows:
 	$(CXX) -c $(CXXFLAGS) $(GUIDIR)/guiwindows.cpp -o $(OBJDIR)/guiwindows.o
 
 maincli:
-	$(CXX) -c ./maincli.cpp -o $(OBJDIR)/maincli.o
+	$(CXX) -c $(CXXFLAGS) ./maincli.cpp -o $(OBJDIR)/maincli.o
 
 maingui:
 	$(CXX) $(CXXFLAGS) -c ./maingui.cpp -o $(OBJDIR)/maingui.o

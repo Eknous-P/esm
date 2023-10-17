@@ -1,5 +1,5 @@
 #include <cstdint>
-#include "esm.h"
+#include "esmdebug.h"
 
 #define EMU_VERSION "v0.2"
 

@@ -1,5 +1,5 @@
 #include <cstdint>
-#include "esm.h"
+#include "esmdebug.h"
 
 extern const char * regDesc[16];
 
