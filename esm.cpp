@@ -97,38 +97,43 @@ void ESM::sampleCount() {
 }
 
 void ESM::tones() {
-    uint16_t toneDiv;
+    uint16_t toneDiv[4];
+    esm.toneOut = esm.toneOut & 0b11110000; //reset count outputs but not div outputs
     for (uint8_t i=0; i<4; i++) {
-        esm.toneCounter[i]+=1u;
         esm.toneCounter[i] &= 0b0000111111111111;
-        esm.toneOut = esm.toneOut & 0b11110000; //reset count outputs but not div outputs
-        toneDiv = (esm.toneConf[i] & 0b0000111111111111);
-        if (esm.toneCounter[i] > toneDiv - 1u) {
+        toneDiv[i] = (esm.toneConf[i] & 0b0000111111111111);
+        if (esm.toneCounter[i] > toneDiv[i] - 1u) {
             esm.toneCounter[i] = 0u;
-            esm.toneOut ^= (1u << (i+4));
-            switch (i) {
+            esm.toneOut ^= (1u << (i+4));//write divided
+            switch (i) {//lfsrs and undivided (pulse)
                 case 0: {
                     uint32_t xor0 = ((esm.lfsr0 >> 25) ^ (esm.lfsr0 >> 19) ^ (esm.lfsr0 >> 11) ^ (esm.lfsr0 >> 9)) & 1u;
                     esm.lfsr0 = (esm.lfsr0 >> 1) | (!xor0 << 31);
+                    esm.toneOut |= 0b1;
                     break;
                 }
                 case 1: {
                     uint32_t xor1 = ((esm.lfsr1 >> 25) ^ (esm.lfsr1 >> 19) ^ (esm.lfsr1 >> 11) ^ (esm.lfsr1 >> 9)) & 1u;
                     esm.lfsr1 = (esm.lfsr1 >> 1) | (!xor1 << 31);
+                    esm.toneOut |= 0b10;
                     break;
                 }
                 case 2: {
                     uint8_t xor2 = ((esm.lfsr2 >> 4) ^ (esm.lfsr2 >> 3) ^ (esm.lfsr2 >> 1) ^ esm.lfsr2) & 1u;
                     esm.lfsr2 = (esm.lfsr2 >> 1) | (!xor2 << 7);
+                    esm.toneOut |= 0b100;
                     break;
                 }
                 case 3: {
                     uint8_t xor3 = ((esm.lfsr3 >> 4) ^ (esm.lfsr3 >> 3) ^ (esm.lfsr3 >> 1) ^ esm.lfsr3) & 1u;
                     esm.lfsr3 = (esm.lfsr3 >> 1) | (!xor3 << 7);
+                    esm.toneOut |= 0b1000;
                     break;
                 }
                 default: break;
             }
+        } else {
+            esm.toneCounter[i]+=1u;
         }
     }
 }

@@ -26,10 +26,10 @@ uint8_t reg = 0, dat = 0;
 bool emuRunning = false;
 bool emuRunningTemp = emuRunning;
 
-bool open_regStat = false;
-bool open_input = false;
-bool open_interPins = false;
-bool open_ctl = false;
+bool open_regStat = true;
+bool open_input = true;
+bool open_interPins = true;
+bool open_ctl = true;
 bool open_demo = false;
 
 ESM esm;
