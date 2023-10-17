@@ -3,13 +3,14 @@
 
 BUILDDIR = ./build
 OBJDIR = ./build/obj
+GUIDIR = ./gui
 
 #shamefully copied from the examples
 IMGUI_DIR = ./imgui
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -std=c++11 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
+CXXFLAGS = -std=c++11 -I . -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(GUIDIR)
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
@@ -45,8 +46,8 @@ imgui_be_opgl3:
 buildcli: maincli esm
 	$(CXX) $(OBJDIR)/esm.o $(OBJDIR)/maincli.o -o $(BUILDDIR)/esmtestcli
 
-buildgui: esm maingui imgui_main imgui_demo imgui_draw imgui_tables imgui_widgets imgui_be_glfw imgui_be_opgl3
-	$(CXX) $(CXXFLAGS) $(OBJDIR)/maingui.o $(OBJDIR)/esm.o $(OBJDIR)/imgui.o $(OBJDIR)/imgui_demo.o $(OBJDIR)/imgui_draw.o $(OBJDIR)/imgui_tables.o $(OBJDIR)/imgui_widgets.o $(OBJDIR)/imgui_glfw.o $(OBJDIR)/imgui_opgl3.o -o $(BUILDDIR)/esmtestgui $(LIBS)
+buildgui: esm guistuff guiwindows maingui imgui_main imgui_demo imgui_draw imgui_tables imgui_widgets imgui_be_glfw imgui_be_opgl3
+	$(CXX) $(CXXFLAGS) $(OBJDIR)/maingui.o $(OBJDIR)/guistuff.o $(OBJDIR)/guiwindows.o $(OBJDIR)/esm.o $(OBJDIR)/imgui.o $(OBJDIR)/imgui_demo.o $(OBJDIR)/imgui_draw.o $(OBJDIR)/imgui_tables.o $(OBJDIR)/imgui_widgets.o $(OBJDIR)/imgui_glfw.o $(OBJDIR)/imgui_opgl3.o -o $(BUILDDIR)/esmtestgui $(LIBS)
 
 prep:
 	mkdir build
@@ -54,6 +55,12 @@ prep:
 
 esm: 
 	$(CXX) -c ./esm.cpp -o $(OBJDIR)/esm.o
+
+guistuff:
+	$(CXX) -c $(CXXFLAGS) $(GUIDIR)/guistuff.cpp -o $(OBJDIR)/guistuff.o
+
+guiwindows:
+	$(CXX) -c $(CXXFLAGS) $(GUIDIR)/guiwindows.cpp -o $(OBJDIR)/guiwindows.o
 
 maincli:
 	$(CXX) -c ./maincli.cpp -o $(OBJDIR)/maincli.o

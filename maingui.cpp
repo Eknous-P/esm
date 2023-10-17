@@ -7,7 +7,7 @@
 // - Documentation        https://dearimgui.com/docs (same as your local docs/ folder).
 // - Introduction, links and more at the top of imgui.cpp
 
-#include "esm.h"
+#include "gui.h"
 #include <cstdint>
 
 #include "imgui.h"
@@ -32,31 +32,6 @@
 #include "../libs/emscripten/emscripten_mainloop_stub.h"
 #endif
 
-ESM esm;
-const char * regDesc[16] = {
-    "TONE 1 CONFIG 1",
-    "TONE 1 CONFIG 2",
-    "TONE 2 CONFIG 1",
-    "TONE 2 CONFIG 2",
-    "TONE 3 CONFIG 1",
-    "TONE 3 CONFIG 2",
-    "TONE 4 CONFIG 1",
-    "TONE 4 CONFIG 2",
-    "TONE MASK",
-    "TONE VOLUME",
-    "SAMPLE PITCH LOW",
-    "SAMPLE PITCH HIGH",
-    "SAMPLE LOOP START LOW",
-    "SAMPLE LOOP START HIGH",
-    "SAMPLE LOOP END LOW",
-    "SAMPLE LOOP END HIGH"
-};
-
-uint8_t u8_one = 1u;
-uint8_t reg=0u, dat=0u;
-char strbuf[8];
-bool emuRunning = false;
-bool emuRunningTemp = emuRunning;
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -136,141 +111,27 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::Begin("REGISTER STATUS");
-            if(ImGui::BeginTable("REGISTERS",3)){
-                ImGui::TableSetupColumn("REG",ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableSetupColumn("VALUE",ImGuiTableColumnFlags_WidthStretch);
-                ImGui::TableSetupColumn("DESC",ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableHeadersRow();
-                for (uint8_t i=0; i<16; i++) {
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    sprintf(strbuf, "%b", i);
-                    ImGui::Text(strbuf);
-                    ImGui::TableNextColumn();
-                    sprintf(strbuf, "%b", esm.getRegStat(i));
-                    ImGui::Text(strbuf);
-                    ImGui::TableNextColumn();
-                    ImGui::Text(regDesc[i]);
-                }
-                ImGui::EndTable();
-            }
+        if (open_regStat) win_regStat(&open_regStat);
+        if (open_input) win_input(&open_input);
+        if (open_interPins) win_interPins(&open_interPins);
+        if (open_ctl) win_ctl(&open_ctl);
+        if (open_demo) win_demo(&open_demo);
 
-        ImGui::End();
-        ImGui::Begin("INPUT");
-            ImGui::InputScalar("REGISTER", ImGuiDataType_U8, &reg, &u8_one, NULL, "%u");
-            ImGui::InputScalar("DATA", ImGuiDataType_U8, &dat, &u8_one, NULL, "%u");
-            reg &= 0xf;
-            // dat &= 0xff;
-            if (ImGui::Button("WRITE")) {
-                esm.writeRegBus(reg);
-                esm.writeDataBus(dat);
+        if (ImGui::BeginMainMenuBar()) {
+            if (ImGui::BeginMenu("Windows")) {
+                ImGui::MenuItem("REGISTER STATUS", NULL, &open_regStat);
+                ImGui::MenuItem("INPUT", NULL, &open_input);
+                ImGui::MenuItem("INTERNAL PINS", NULL, &open_interPins);
+                ImGui::MenuItem("CONTROL", NULL, &open_ctl);
+                ImGui::MenuItem("DEMO", NULL, &open_demo);
 
-                esm.decodeRegister();
+                ImGui::EndMenu();
             }
-        ImGui::End();
+            ImGui::EndMainMenuBar();
+        }
+
         if (emuRunning) emuRunningTemp = true;
-        ImGui::Begin("INTERNAL PINS");
-            if (ImGui::BeginTable("INTERNAL PINS", 3)){
-                ImGui::TableSetupColumn("",ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableSetupColumn("BIN",ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableSetupColumn("HEX",ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableHeadersRow();
-
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn();
-                ImGui::AlignTextToFramePadding();
-                ImGui::Text("TONE OUTPUTS");
-                ImGui::TableNextColumn();
-                ImGui::BeginDisabled();
-                for (uint8_t i=8; i>0; i--) {
-                    bool bits[8];
-                    bits[i] = ((esm.getToneOut() >> (i-1)) & 1u) == 1;
-                    ImGui::Checkbox("",&bits[i]);
-                    ImGui::SameLine();
-                }
-                ImGui::EndDisabled();
-                ImGui::TableNextColumn();
-                sprintf(strbuf, "%x", esm.getToneOut());
-                ImGui::Text(strbuf);
-
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn();
-                ImGui::AlignTextToFramePadding();
-                ImGui::Text("PRNG OUTPUT");
-                ImGui::TableNextColumn();
-                ImGui::BeginDisabled();
-                for (uint8_t i=8; i>0; i--) {
-                    bool bits[8];
-                    bits[i] = ((esm.getRandOut() >> (i-1)) & 1u) == 1;
-                    ImGui::Checkbox("",&bits[i]);
-                    ImGui::SameLine();
-                }
-                ImGui::EndDisabled();
-                ImGui::TableNextColumn();
-                sprintf(strbuf, "%x", esm.getRandOut());
-                ImGui::Text(strbuf);
-
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn();
-                ImGui::AlignTextToFramePadding();
-                ImGui::Text("PROGRAM COUNTER");
-                ImGui::TableNextColumn();
-                ImGui::BeginDisabled();
-                for (uint8_t i=32; i>0; i--) {
-                    bool bits[32];
-                    bits[i] = ((esm.getPC() >> (i-1)) & 1u) == 1;
-                    ImGui::Checkbox("",&bits[i]);
-                    ImGui::SameLine();
-                }
-                ImGui::EndDisabled();
-                ImGui::TableNextColumn();
-                sprintf(strbuf, "%x", esm.getPC());
-                ImGui::Text(strbuf);
-                for (uint8_t a=0;a<4;a++) {
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    ImGui::AlignTextToFramePadding();
-                    ImGui::Text("LFSR#%d",a);
-                    ImGui::TableNextColumn();
-                    ImGui::BeginDisabled();
-                    if (a < 2) {
-                        for (uint8_t i=32; i>0; i--) {
-                            bool bits[32];
-                            bits[i] = ((esm.getLFSR(a) >> (i-1)) & 1u) == 1;
-                            ImGui::Checkbox("",&bits[i]);
-                            ImGui::SameLine();
-                        }
-                    } else {
-                        for (uint8_t i=8; i>0; i--) {
-                            bool bits[8];
-                            bits[i] = ((esm.getLFSR(a) >> (i-1)) & 1u) == 1;
-                            ImGui::Checkbox("",&bits[i]);
-                            ImGui::SameLine();
-                        }
-                    }
-                    ImGui::EndDisabled();
-                    ImGui::TableNextColumn();
-                    sprintf(strbuf, "%x", esm.getLFSR(a));
-                    ImGui::Text(strbuf);
-                }
-
-                ImGui::EndTable();
-            }
-        ImGui::End();
         if (emuRunningTemp) emuRunning=true;
-        ImGui::Begin("CONTROL");
-            if (ImGui::Button("TICK")) {
-                esm.decodeRegister();
-                esm.tick();
-            }
-            ImGui::SameLine();
-            ImGui::Checkbox("RUNNING", &emuRunning);
-            emuRunningTemp=emuRunning;
-            ImGui::SameLine();
-
-            if (ImGui::Button("RESET")) esm.reset();
-        ImGui::End();
 
         // Rendering
         ImGui::Render();
