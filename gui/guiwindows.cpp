@@ -133,8 +133,8 @@ void win_interPins(bool* open) {
                 ImGui::Text("TONE COUNTER #%d",a);
                 ImGui::TableNextColumn();
                 ImGui::BeginDisabled();
-                for (uint8_t i=16; i>0; i--) {
-                    bool bits[16];
+                for (uint8_t i=12; i>0; i--) {
+                    bool bits[12];
                     bits[i] = ((esm.getToneCounter(a) >> (i-1)) & 1u) == 1;
                     ImGui::Checkbox("",&bits[i]);
                     ImGui::SameLine();
@@ -144,6 +144,23 @@ void win_interPins(bool* open) {
                 sprintf(strbuf, "%x", esm.getToneCounter(a));
                 ImGui::Text(strbuf);
             }
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::AlignTextToFramePadding();
+            ImGui::Text("SAMPLE COUNTER");
+            ImGui::TableNextColumn();
+            ImGui::BeginDisabled();
+            for (uint8_t i=16; i>0; i--) {
+                bool bits[16];
+                bits[i] = ((esm.getSampleAddrBus() >> (i-1)) & 1u) == 1;
+                ImGui::Checkbox("",&bits[i]);
+                ImGui::SameLine();
+            }
+            ImGui::EndDisabled();
+            ImGui::TableNextColumn();
+            sprintf(strbuf, "%x", esm.getSampleAddrBus());
+            ImGui::Text(strbuf);
+        
             ImGui::EndTable();
         }
     ImGui::End();

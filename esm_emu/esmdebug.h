@@ -45,7 +45,7 @@ class ESM {
     uint8_t getRegBus();
     uint8_t getDataBus();
     uint16_t getToneConf(uint8_t ch);
-    uint8_t getToneCounter(uint8_t ch);
+    uint16_t getToneCounter(uint8_t ch);
     uint8_t getToneOut();
     uint32_t getPC();
     uint32_t getLFSR(uint8_t n);

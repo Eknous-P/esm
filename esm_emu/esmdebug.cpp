@@ -58,7 +58,7 @@ void ESM::decodeRegister() {
         }
         case 11: {
             esm.sampleConf = (esm.sampleConf & 0xff);
-            esm.sampleConf += (short)esm.dataBus*256;
+            esm.sampleConf += (short)esm.dataBus << 8;
             break;
         }
         case 12: {
@@ -68,7 +68,7 @@ void ESM::decodeRegister() {
         }
         case 13: {
             esm.sampleStart = (esm.sampleStart & 0xff);
-            esm.sampleStart += (short)esm.dataBus*256;
+            esm.sampleStart += (short)esm.dataBus << 8;
             break;
         }
         case 14: {
@@ -78,7 +78,7 @@ void ESM::decodeRegister() {
         }
         case 15: {
             esm.sampleEnd = (esm.sampleEnd & 0xff);
-            esm.sampleEnd += (short)esm.dataBus*256;
+            esm.sampleEnd += (short)esm.dataBus << 8;
             break;
         }
         default: break;
@@ -86,13 +86,14 @@ void ESM::decodeRegister() {
 }
 
 void ESM::sampleCount() {
+    if ((esm.sampleConf & 1u) == 0) {
+        esm.sampleAddressBus = 0;
+        return;
+    }
     esm.sampleAddressBus++;
 
-    if ((esm.sampleAddressBus > esm.sampleEnd) && ((esm.sampleConf & 0b1u) == 0u)) {
+    if ((esm.sampleAddressBus > esm.sampleEnd)) {
         esm.sampleAddressBus = esm.sampleStart;
-    }
-    else if ((esm.sampleConf << 4) > 0) {
-        esm.sampleAddressBus = 0;
     }
 }
 
@@ -136,7 +137,7 @@ uint16_t ESM::getToneConf(uint8_t ch) {
     return esm.toneConf[ch];
 }
 
-uint8_t ESM::getToneCounter(uint8_t ch) {
+uint16_t ESM::getToneCounter(uint8_t ch) {
     return esm.toneCounter[ch];
 }
 
