@@ -130,8 +130,6 @@ int main(int, char**)
             ImGui::EndMainMenuBar();
         }
 
-        if (emuRunning) emuRunningTemp = true;
-        if (emuRunningTemp) emuRunning=true;
 
         // Rendering
         ImGui::Render();

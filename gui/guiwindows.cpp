@@ -157,7 +157,6 @@ void win_ctl(bool* open) {
         }
         ImGui::SameLine();
         ImGui::Checkbox("RUNNING", &emuRunning);
-        emuRunningTemp=emuRunning;
         ImGui::SameLine();
         if (ImGui::Button("RESET")) esm.reset();
     ImGui::End();

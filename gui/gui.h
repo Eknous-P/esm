@@ -7,7 +7,6 @@ extern const char * regDesc[16];
 extern uint8_t u8_one;
 extern uint8_t reg, dat;
 extern bool emuRunning;
-extern bool emuRunningTemp;
 
 extern bool open_regStat;
 extern bool open_input;

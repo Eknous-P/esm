@@ -24,7 +24,6 @@ uint8_t u8_one = 1u;
 uint8_t reg = 0, dat = 0;
 
 bool emuRunning = false;
-bool emuRunningTemp = emuRunning;
 
 bool open_regStat = true;
 bool open_input = true;
