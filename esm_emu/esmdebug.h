@@ -10,8 +10,7 @@ class ESM {
             uint8_t psgOut;
 
             /*====INTERNAL MEMORY (LATCHES)====*/
-            uint32_t lfsr0, lfsr1; //channels 1 and 2
-            uint8_t lfsr2, lfsr3; //channels 3 and 4
+            uint32_t lfsr[4];
 
             uint8_t globVolume;
 

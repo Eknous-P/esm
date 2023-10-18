@@ -5,7 +5,7 @@
 
 /*====REGISTERS (once more)====
 
-ADDR|NAME======================|DATA====
+REG=|NAME======================|DATA====
 ----|--------------------------|7------0
 0000|TONE 1 CONFIG 1 ==========|FFFFFFFF
 0001|TONE 1 CONFIG 2 ==========|VVVVFFFF
@@ -34,12 +34,12 @@ void ESM::decodeRegister() {
     esm.regStat[esm.regBus] = esm.dataBus;
     switch (esm.regBus % 16) {
         case 0: case 2: case 4: case 6: {
-            esm.toneConf[esm.regBus >> 1] &= 0b1111111100000000;//erase low byte
+            esm.toneConf[esm.regBus >> 1] &= 0xff00;//erase low byte
             esm.toneConf[esm.regBus >> 1] += esm.dataBus;//overwrite
             break;
         }
         case 1: case 3: case 5: case 7: {
-            esm.toneConf[(esm.regBus-1) >> 1] &= 0b0000000011111111;//erase high byte
+            esm.toneConf[(esm.regBus-1) >> 1] &= 0xff;//erase high byte
             esm.toneConf[(esm.regBus-1) >> 1] += ((short)esm.dataBus) << 8;//same
             break;
         }
@@ -52,32 +52,32 @@ void ESM::decodeRegister() {
             break;
         }
         case 10: {
-            esm.sampleConf = (esm.sampleConf & 0b1111111100000000);
+            esm.sampleConf = (esm.sampleConf & 0xff00);
             esm.sampleConf += esm.dataBus;
             break;
         }
         case 11: {
-            esm.sampleConf = (esm.sampleConf & 0b0000000011111111);
+            esm.sampleConf = (esm.sampleConf & 0xff);
             esm.sampleConf += (short)esm.dataBus*256;
             break;
         }
         case 12: {
-            esm.sampleStart = (esm.sampleStart & 0b1111111100000000);
+            esm.sampleStart = (esm.sampleStart & 0xff00);
             esm.sampleStart += esm.dataBus;
             break;
         }
         case 13: {
-            esm.sampleStart = (esm.sampleStart & 0b0000000011111111);
+            esm.sampleStart = (esm.sampleStart & 0xff);
             esm.sampleStart += (short)esm.dataBus*256;
             break;
         }
         case 14: {
-            esm.sampleEnd = (esm.sampleEnd & 0b1111111100000000);
+            esm.sampleEnd = (esm.sampleEnd & 0xff00);
             esm.sampleEnd += esm.dataBus;
             break;
         }
         case 15: {
-            esm.sampleEnd = (esm.sampleEnd & 0b0000000011111111);
+            esm.sampleEnd = (esm.sampleEnd & 0xff);
             esm.sampleEnd += (short)esm.dataBus*256;
             break;
         }
@@ -97,41 +97,23 @@ void ESM::sampleCount() {
 }
 
 void ESM::tones() {
-    uint16_t toneDiv[4];
-    esm.toneOut = esm.toneOut & 0b11110000; //reset count outputs but not div outputs
+    uint16_t toneDiv;
+    uint32_t _xor;
+    esm.toneOut = esm.toneOut & 0xf0; //reset count outputs but not div outputs
     for (uint8_t i=0; i<4; i++) {
-        esm.toneCounter[i] &= 0b0000111111111111;
-        toneDiv[i] = (esm.toneConf[i] & 0b0000111111111111);
-        if (esm.toneCounter[i] > toneDiv[i] - 1u) {
+        esm.toneCounter[i] &= 0xfff;
+        toneDiv = (esm.toneConf[i] & 0xfff);
+        if (esm.toneCounter[i] > toneDiv - 1u) {
             esm.toneCounter[i] = 0u;
             esm.toneOut ^= (1u << (i+4));//write divided
-            switch (i) {//lfsrs and undivided (pulse)
-                case 0: {
-                    uint32_t xor0 = ((esm.lfsr0 >> 25) ^ (esm.lfsr0 >> 19) ^ (esm.lfsr0 >> 11) ^ (esm.lfsr0 >> 9)) & 1u;
-                    esm.lfsr0 = (esm.lfsr0 >> 1) | (!xor0 << 31);
-                    esm.toneOut |= 0b1;
-                    break;
+                if (i < 3) {
+                    _xor = ((esm.lfsr[i] >> 25) ^ (esm.lfsr[i] >> 19) ^ (esm.lfsr[i] >> 11) ^ (esm.lfsr[i] >> 9)) & 1u;
+                } else {
+                    _xor = ((esm.lfsr[i] >> 4) ^ (esm.lfsr[i] >> 3) ^ (esm.lfsr[i] >> 1) ^ esm.lfsr[i]) & 1u;
                 }
-                case 1: {
-                    uint32_t xor1 = ((esm.lfsr1 >> 25) ^ (esm.lfsr1 >> 19) ^ (esm.lfsr1 >> 11) ^ (esm.lfsr1 >> 9)) & 1u;
-                    esm.lfsr1 = (esm.lfsr1 >> 1) | (!xor1 << 31);
-                    esm.toneOut |= 0b10;
-                    break;
-                }
-                case 2: {
-                    uint8_t xor2 = ((esm.lfsr2 >> 4) ^ (esm.lfsr2 >> 3) ^ (esm.lfsr2 >> 1) ^ esm.lfsr2) & 1u;
-                    esm.lfsr2 = (esm.lfsr2 >> 1) | (!xor2 << 7);
-                    esm.toneOut |= 0b100;
-                    break;
-                }
-                case 3: {
-                    uint8_t xor3 = ((esm.lfsr3 >> 4) ^ (esm.lfsr3 >> 3) ^ (esm.lfsr3 >> 1) ^ esm.lfsr3) & 1u;
-                    esm.lfsr3 = (esm.lfsr3 >> 1) | (!xor3 << 7);
-                    esm.toneOut |= 0b1000;
-                    break;
-                }
-                default: break;
-            }
+                esm.lfsr[i] = (esm.lfsr[i] >> 1) | (!_xor << 31);
+                esm.toneOut |= (0b1 << i);
+            
         } else {
             esm.toneCounter[i]+=1u;
         }
@@ -167,17 +149,11 @@ uint32_t ESM::getPC() {
 }
 
 uint32_t ESM::getLFSR(uint8_t n) {
-    switch (n) {
-        case 0: return esm.lfsr0; break;
-        case 1: return esm.lfsr1; break;
-        case 2: return esm.lfsr2; break;
-        case 3: return esm.lfsr3; break;
-        default: return 0xffff; break; //wrong number
-    }
+    return esm.lfsr[n];
 }
 
 uint8_t ESM::getRandOut() {
-    return (esm.lfsr0 & 0xff);
+    return (esm.lfsr[0] & 0xff);
 }
 
 uint8_t ESM::getRegStat(uint8_t reg) {
@@ -203,10 +179,10 @@ void ESM::reset() {
     esm.toneCounter[1] = 0u;
     esm.toneCounter[2] = 0u;
     esm.toneCounter[3] = 0u;
-    esm.lfsr0 = 0u;
-    esm.lfsr1 = 0u;
-    esm.lfsr2 = 0u;
-    esm.lfsr3 = 0u;
+    esm.lfsr[0] = 0u;
+    esm.lfsr[1] = 0u;
+    esm.lfsr[2] = 0u;
+    esm.lfsr[3] = 0u;
     esm.globVolume = 0u;
     esm.toneConf[0] = 0u;
     esm.toneConf[1] = 0u;
