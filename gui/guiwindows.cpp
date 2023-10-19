@@ -46,9 +46,13 @@ void win_input(bool* open) {
 
 void win_interPins(bool* open) {
     ImGui::Begin("INTERNAL PINS", open);
-        if (ImGui::BeginTable("INTERNAL PINS", 3)){
+        ImVec2 p;
+        float x;
+        const float size = 15.0f;
+        const float dist = size * 1.5f;
+        if (ImGui::BeginTable( "INTERNAL PINS", 3)){
             ImGui::TableSetupColumn("",ImGuiTableColumnFlags_WidthFixed);
-            ImGui::TableSetupColumn("BIN",ImGuiTableColumnFlags_WidthFixed);
+            ImGui::TableSetupColumn("BIN",ImGuiTableColumnFlags_WidthStretch);
             ImGui::TableSetupColumn("HEX",ImGuiTableColumnFlags_WidthFixed);
             ImGui::TableHeadersRow();
             ImGui::TableNextRow();
@@ -57,11 +61,13 @@ void win_interPins(bool* open) {
             ImGui::Text("TONE OUTPUTS");
             ImGui::TableNextColumn();
             ImGui::BeginDisabled();
+            p = ImGui::GetCursorScreenPos();
+            x = p.x;
             for (uint8_t i=8; i>0; i--) {
                 bool bits[8];
                 bits[i] = ((esm.getToneOut() >> (i-1)) & 1u) == 1;
-                ImGui::Checkbox("",&bits[i]);
-                ImGui::SameLine();
+                obj_sqrBit(size,bits[i],ImVec2(x,p.y));
+                x += dist;
             }
             ImGui::EndDisabled();
             ImGui::TableNextColumn();
@@ -73,11 +79,13 @@ void win_interPins(bool* open) {
             ImGui::Text("PRNG OUTPUT");
             ImGui::TableNextColumn();
             ImGui::BeginDisabled();
+            p = ImGui::GetCursorScreenPos();
+            x = p.x;
             for (uint8_t i=8; i>0; i--) {
                 bool bits[8];
                 bits[i] = ((esm.getRandOut() >> (i-1)) & 1u) == 1;
-                ImGui::Checkbox("",&bits[i]);
-                ImGui::SameLine();
+                obj_sqrBit(size,bits[i],ImVec2(x,p.y));
+                x += dist;
             }
             ImGui::EndDisabled();
             ImGui::TableNextColumn();
@@ -89,11 +97,13 @@ void win_interPins(bool* open) {
             ImGui::Text("PROGRAM COUNTER");
             ImGui::TableNextColumn();
             ImGui::BeginDisabled();
+            p = ImGui::GetCursorScreenPos();
+            x = p.x;
             for (uint8_t i=32; i>0; i--) {
                 bool bits[32];
                 bits[i] = ((esm.getPC() >> (i-1)) & 1u) == 1;
-                ImGui::Checkbox("",&bits[i]);
-                ImGui::SameLine();
+                obj_sqrBit(size,bits[i],ImVec2(x,p.y));
+                x += dist;
             }
             ImGui::EndDisabled();
             ImGui::TableNextColumn();
@@ -107,17 +117,23 @@ void win_interPins(bool* open) {
                 ImGui::TableNextColumn();
                 ImGui::BeginDisabled();
                 if (a < 2) {
+                    p = ImGui::GetCursorScreenPos();
+                    x = p.x;
                     for (uint8_t i=32; i>0; i--) {
                         bool bits[32];
-                        bits[i] = ((esm.getLFSR(a) >> (i-1)) & 1u) == 1;
-                        ImGui::Checkbox("",&bits[i]);
+                        bits[i] = ((esm.getLFSR(a) >> (i-1)) & 1u) == 1;        
+                        obj_sqrBit(size,bits[i],ImVec2(x,p.y));
+                        x += dist;
                         ImGui::SameLine();
                     }
                 } else {
+                    p = ImGui::GetCursorScreenPos();
+                    x = p.x;
                     for (uint8_t i=8; i>0; i--) {
                         bool bits[8];
-                        bits[i] = ((esm.getLFSR(a) >> (i-1)) & 1u) == 1;
-                        ImGui::Checkbox("",&bits[i]);
+                        bits[i] = ((esm.getLFSR(a) >> (i-1)) & 1u) == 1;        
+                        obj_sqrBit(size,bits[i],ImVec2(x,p.y));
+                        x += dist;
                         ImGui::SameLine();
                     }
                 }
@@ -133,10 +149,13 @@ void win_interPins(bool* open) {
                 ImGui::Text("TONE COUNTER #%d",a);
                 ImGui::TableNextColumn();
                 ImGui::BeginDisabled();
+                p = ImGui::GetCursorScreenPos();
+                x = p.x;
                 for (uint8_t i=12; i>0; i--) {
                     bool bits[12];
-                    bits[i] = ((esm.getToneCounter(a) >> (i-1)) & 1u) == 1;
-                    ImGui::Checkbox("",&bits[i]);
+                    bits[i] = ((esm.getToneCounter(a) >> (i-1)) & 1u) == 1;    
+                    obj_sqrBit(size,bits[i],ImVec2(x,p.y));
+                    x += dist;
                     ImGui::SameLine();
                 }
                 ImGui::EndDisabled();
@@ -150,11 +169,13 @@ void win_interPins(bool* open) {
             ImGui::Text("SAMPLE COUNTER");
             ImGui::TableNextColumn();
             ImGui::BeginDisabled();
+            p = ImGui::GetCursorScreenPos();
+            x = p.x;
             for (uint8_t i=16; i>0; i--) {
                 bool bits[16];
                 bits[i] = ((esm.getSampleAddrBus() >> (i-1)) & 1u) == 1;
-                ImGui::Checkbox("",&bits[i]);
-                ImGui::SameLine();
+                obj_sqrBit(size,bits[i],ImVec2(x,p.y));
+                x += dist;
             }
             ImGui::EndDisabled();
             ImGui::TableNextColumn();
@@ -177,4 +198,10 @@ void win_ctl(bool* open) {
         ImGui::SameLine();
         if (ImGui::Button("RESET")) esm.reset();
     ImGui::End();
+}
+
+void obj_sqrBit(float size, bool state, ImVec2 org) {
+    ImDrawList* drawList = ImGui::GetWindowDrawList();
+    const ImU32 cl = ImGui::GetColorU32(IM_COL32(state ? 0 : 255, state ? 255 : 0, 0, 255));
+    drawList->AddRectFilled(ImVec2((org.x),(org.y)), ImVec2((org.x+size),(org.y+size)), cl, 1.0f);
 }

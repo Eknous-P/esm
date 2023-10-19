@@ -1,5 +1,6 @@
 #include <cstdint>
 #include "esmdebug.h"
+#include "imgui.h"
 
 extern const char * regDesc[16];
 
@@ -21,3 +22,5 @@ void win_input(bool* open);
 void win_interPins(bool* open);
 void win_ctl(bool* open);
 void win_demo (bool* open);
+
+void obj_sqrBit(float size, bool state, ImVec2 org);
