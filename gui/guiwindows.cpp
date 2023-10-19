@@ -124,7 +124,6 @@ void win_interPins(bool* open) {
                         bits[i] = ((esm.getLFSR(a) >> (i-1)) & 1u) == 1;        
                         obj_sqrBit(size,bits[i],ImVec2(x,p.y));
                         x += dist;
-                        ImGui::SameLine();
                     }
                 } else {
                     p = ImGui::GetCursorScreenPos();
@@ -134,7 +133,6 @@ void win_interPins(bool* open) {
                         bits[i] = ((esm.getLFSR(a) >> (i-1)) & 1u) == 1;        
                         obj_sqrBit(size,bits[i],ImVec2(x,p.y));
                         x += dist;
-                        ImGui::SameLine();
                     }
                 }
                 ImGui::EndDisabled();
@@ -156,7 +154,6 @@ void win_interPins(bool* open) {
                     bits[i] = ((esm.getToneCounter(a) >> (i-1)) & 1u) == 1;    
                     obj_sqrBit(size,bits[i],ImVec2(x,p.y));
                     x += dist;
-                    ImGui::SameLine();
                 }
                 ImGui::EndDisabled();
                 ImGui::TableNextColumn();
