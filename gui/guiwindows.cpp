@@ -221,6 +221,6 @@ void bufferUpdate() {
 
 void win_osc(bool* open) {
     ImGui::Begin("OSCILLOSCOPE", open);
-    ImGui::PlotLines("", outBuf4x, IM_ARRAYSIZE(outBuf4x), 0, NULL, 0.0f, 6.0f, ImGui::GetContentRegionAvail());
+    ImGui::PlotLines("", outBuf4x, IM_ARRAYSIZE(outBuf4x), 0, NULL, 0.0f, 4.0f, ImGui::GetContentRegionAvail());
     ImGui::End();
 }

@@ -1,7 +1,7 @@
 #include <cstdint>
 #include "esmdebug.h"
 
-#define EMU_VERSION "v0.2"
+#define EMU_VERSION "v1"
 
 /*====REGISTERS (once more)====
 

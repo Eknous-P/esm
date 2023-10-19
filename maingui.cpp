@@ -69,7 +69,7 @@ int main(int, char**)
 #endif
 
     // Create window with graphics context
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "ESM Test Tool v0.2", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "ESM Test Tool v1", nullptr, nullptr);
     if (window == nullptr)
         return 1;
     glfwMakeContextCurrent(window);
