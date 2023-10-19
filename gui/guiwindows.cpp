@@ -193,6 +193,7 @@ void win_ctl(bool* open) {
         if (ImGui::Button("TICK")) {
             esm.decodeRegister();
             esm.tick();
+            bufferUpdate();
         }
         ImGui::SameLine();
         ImGui::Checkbox("RUNNING", &emuRunning);
@@ -205,4 +206,21 @@ void obj_sqrBit(float size, bool state, ImVec2 org) {
     ImDrawList* drawList = ImGui::GetWindowDrawList();
     const ImU32 cl = ImGui::GetColorU32(IM_COL32(state ? 0 : 255, state ? 255 : 0, 0, 255));
     drawList->AddRectFilled(ImVec2((org.x),(org.y)), ImVec2((org.x+size),(org.y+size)), cl, 1.0f);
+}
+
+void bufferUpdate() {
+    for (uint16_t i=IM_ARRAYSIZE(outBuf)-1; i>0; i--) { //this is probably way too slow
+        outBuf[i] = outBuf[i-1];
+        outBuf4x[4*i] = outBuf[i];
+        outBuf4x[4*i+1] = outBuf[i];
+        outBuf4x[4*i+2] = outBuf[i];
+        outBuf4x[4*i+3] = outBuf[i];
+    }
+    outBuf[0] = esm.getAnalogOut();
+}
+
+void win_osc(bool* open) {
+    ImGui::Begin("OSCILLOSCOPE", open);
+    ImGui::PlotLines("", outBuf4x, IM_ARRAYSIZE(outBuf4x), 0, NULL, 0.0f, 6.0f, ImGui::GetContentRegionAvail());
+    ImGui::End();
 }

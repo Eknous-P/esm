@@ -51,6 +51,7 @@ class ESM {
     uint16_t getToneCounter(uint8_t ch);
     uint8_t getToneOut();
     uint8_t getPSGOut();
+    float getAnalogOut();
     uint32_t getPC();
     uint32_t getLFSR(uint8_t n);
     uint8_t getRandOut();

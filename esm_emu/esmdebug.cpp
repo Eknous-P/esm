@@ -127,6 +127,10 @@ void ESM::tones() {
     }
 }
 
+void ESM::mixAnalog() {
+    esm.aOut = ((esm.psgOut >> 0) & 1u) + ((esm.psgOut >> 1) & 1u) + ((esm.psgOut >> 2) & 1u) + ((esm.psgOut >> 3) & 1u);
+}
+
 uint16_t ESM::getSampleAddrBus() {
     return esm.sampleAddressBus;
 }
@@ -153,6 +157,10 @@ uint8_t ESM::getToneOut() {
 
 uint8_t ESM::getPSGOut() {
     return esm.psgOut;
+}
+
+float ESM::getAnalogOut() {
+    return esm.aOut;
 }
 
 uint32_t ESM::getPC() {
@@ -216,6 +224,7 @@ char ESM::tick() {
     ESM::decodeRegister();
     ESM::sampleCount();
     ESM::tones();
+    mixAnalog(); //only for debug emu. hw will use multiplexing
     return 0;
 }
 

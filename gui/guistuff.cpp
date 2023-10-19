@@ -30,6 +30,10 @@ bool open_input = true;
 bool open_interPins = true;
 bool open_ctl = true;
 bool open_demo = false;
+bool open_osc = true;
+
+float outBuf[128]={};
+float outBuf4x[512]={};
 
 ESM esm;
 

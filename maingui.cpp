@@ -105,6 +105,7 @@ int main(int, char**)
         if (emuRunning) {
             esm.decodeRegister();
             esm.tick();
+            bufferUpdate();
         }
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -116,6 +117,7 @@ int main(int, char**)
         if (open_interPins) win_interPins(&open_interPins);
         if (open_ctl) win_ctl(&open_ctl);
         if (open_demo) win_demo(&open_demo);
+        if (open_osc) win_osc(&open_osc);
 
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Windows")) {
@@ -124,6 +126,7 @@ int main(int, char**)
                 ImGui::MenuItem("INTERNAL PINS", NULL, &open_interPins);
                 ImGui::MenuItem("CONTROL", NULL, &open_ctl);
                 ImGui::MenuItem("DEMO", NULL, &open_demo);
+                ImGui::MenuItem("OSC", NULL, &open_osc);
 
                 ImGui::EndMenu();
             }
