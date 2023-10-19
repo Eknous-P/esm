@@ -60,7 +60,6 @@ void win_interPins(bool* open) {
             ImGui::AlignTextToFramePadding();
             ImGui::Text("TONE OUTPUTS");
             ImGui::TableNextColumn();
-            ImGui::BeginDisabled();
             p = ImGui::GetCursorScreenPos();
             x = p.x;
             for (uint8_t i=8; i>0; i--) {
@@ -69,7 +68,6 @@ void win_interPins(bool* open) {
                 obj_sqrBit(size,bits[i],ImVec2(x,p.y));
                 x += dist;
             }
-            ImGui::EndDisabled();
             ImGui::TableNextColumn();
             sprintf(strbuf, "%x", esm.getToneOut());
             ImGui::Text(strbuf);
@@ -78,7 +76,6 @@ void win_interPins(bool* open) {
             ImGui::AlignTextToFramePadding();
             ImGui::Text("PRNG OUTPUT");
             ImGui::TableNextColumn();
-            ImGui::BeginDisabled();
             p = ImGui::GetCursorScreenPos();
             x = p.x;
             for (uint8_t i=8; i>0; i--) {
@@ -87,7 +84,6 @@ void win_interPins(bool* open) {
                 obj_sqrBit(size,bits[i],ImVec2(x,p.y));
                 x += dist;
             }
-            ImGui::EndDisabled();
             ImGui::TableNextColumn();
             sprintf(strbuf, "%x", esm.getRandOut());
             ImGui::Text(strbuf);
@@ -96,7 +92,6 @@ void win_interPins(bool* open) {
             ImGui::AlignTextToFramePadding();
             ImGui::Text("PROGRAM COUNTER");
             ImGui::TableNextColumn();
-            ImGui::BeginDisabled();
             p = ImGui::GetCursorScreenPos();
             x = p.x;
             for (uint8_t i=32; i>0; i--) {
@@ -105,7 +100,6 @@ void win_interPins(bool* open) {
                 obj_sqrBit(size,bits[i],ImVec2(x,p.y));
                 x += dist;
             }
-            ImGui::EndDisabled();
             ImGui::TableNextColumn();
             sprintf(strbuf, "%x", esm.getPC());
             ImGui::Text(strbuf);
@@ -115,7 +109,6 @@ void win_interPins(bool* open) {
                 ImGui::AlignTextToFramePadding();
                 ImGui::Text("LFSR#%d",a);
                 ImGui::TableNextColumn();
-                ImGui::BeginDisabled();
                 if (a < 2) {
                     p = ImGui::GetCursorScreenPos();
                     x = p.x;
@@ -135,7 +128,6 @@ void win_interPins(bool* open) {
                         x += dist;
                     }
                 }
-                ImGui::EndDisabled();
                 ImGui::TableNextColumn();
                 sprintf(strbuf, "%x", esm.getLFSR(a));
                 ImGui::Text(strbuf);
@@ -146,7 +138,6 @@ void win_interPins(bool* open) {
                 ImGui::AlignTextToFramePadding();
                 ImGui::Text("TONE COUNTER #%d",a);
                 ImGui::TableNextColumn();
-                ImGui::BeginDisabled();
                 p = ImGui::GetCursorScreenPos();
                 x = p.x;
                 for (uint8_t i=12; i>0; i--) {
@@ -155,7 +146,6 @@ void win_interPins(bool* open) {
                     obj_sqrBit(size,bits[i],ImVec2(x,p.y));
                     x += dist;
                 }
-                ImGui::EndDisabled();
                 ImGui::TableNextColumn();
                 sprintf(strbuf, "%x", esm.getToneCounter(a));
                 ImGui::Text(strbuf);
@@ -165,7 +155,6 @@ void win_interPins(bool* open) {
             ImGui::AlignTextToFramePadding();
             ImGui::Text("SAMPLE COUNTER");
             ImGui::TableNextColumn();
-            ImGui::BeginDisabled();
             p = ImGui::GetCursorScreenPos();
             x = p.x;
             for (uint8_t i=16; i>0; i--) {
@@ -174,9 +163,24 @@ void win_interPins(bool* open) {
                 obj_sqrBit(size,bits[i],ImVec2(x,p.y));
                 x += dist;
             }
-            ImGui::EndDisabled();
             ImGui::TableNextColumn();
             sprintf(strbuf, "%x", esm.getSampleAddrBus());
+            ImGui::Text(strbuf);
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::AlignTextToFramePadding();
+            ImGui::Text("PSG OUTPUTS");
+            ImGui::TableNextColumn();
+            p = ImGui::GetCursorScreenPos();
+            x = p.x;
+            for (uint8_t i=4; i>0; i--) {
+                bool bits[4];
+                bits[i] = ((esm.getPSGOut() >> (i-1)) & 1u) == 1;
+                obj_sqrBit(size,bits[i],ImVec2(x,p.y));
+                x += dist;
+            }
+            ImGui::TableNextColumn();
+            sprintf(strbuf, "%x", esm.getPSGOut());
             ImGui::Text(strbuf);
         
             ImGui::EndTable();

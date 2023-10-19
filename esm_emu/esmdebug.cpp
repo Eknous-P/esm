@@ -100,6 +100,7 @@ void ESM::sampleCount() {
 void ESM::tones() {
     uint16_t toneDiv;
     uint32_t _xor;
+    esm.psgOut = 0;
     esm.toneOut = esm.toneOut & 0xf0; //reset count outputs but not div outputs
     for (uint8_t i=0; i<4; i++) {
         esm.toneCounter[i] &= 0xfff;
@@ -117,6 +118,11 @@ void ESM::tones() {
             
         } else {
             esm.toneCounter[i]+=1u;
+        }
+        if (((esm.toneMask >> (i+4)) & 1u) == 1u) { //noise mode
+            esm.psgOut |= ((esm.lfsr[i] & 1u) << i);
+        } else {                                    //divided mode
+            esm.psgOut |= (((esm.toneOut >> (i + 4*((esm.toneMask >> i) & 1u))) & 1u) << i);
         }
     }
 }
@@ -143,6 +149,10 @@ uint16_t ESM::getToneCounter(uint8_t ch) {
 
 uint8_t ESM::getToneOut() {
     return esm.toneOut;
+}
+
+uint8_t ESM::getPSGOut() {
+    return esm.psgOut;
 }
 
 uint32_t ESM::getPC() {

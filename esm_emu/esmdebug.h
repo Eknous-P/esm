@@ -8,6 +8,7 @@ class ESM {
             uint16_t sampleAddressBus;
 
             uint8_t psgOut;
+            float aOut;
 
             /*====INTERNAL MEMORY (LATCHES)====*/
             uint32_t lfsr[4];
@@ -37,6 +38,8 @@ class ESM {
     void decodeRegister();
     void sampleCount();
     void tones();
+
+    void mixAnalog();
     char tick();
 
     void reset();
@@ -47,6 +50,7 @@ class ESM {
     uint16_t getToneConf(uint8_t ch);
     uint16_t getToneCounter(uint8_t ch);
     uint8_t getToneOut();
+    uint8_t getPSGOut();
     uint32_t getPC();
     uint32_t getLFSR(uint8_t n);
     uint8_t getRandOut();
