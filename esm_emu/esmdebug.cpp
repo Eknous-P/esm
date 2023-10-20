@@ -129,6 +129,7 @@ void ESM::tones() {
 
 void ESM::mixAnalog() {
     esm.aOut = ((esm.psgOut >> 0) & 1u) + ((esm.psgOut >> 1) & 1u) + ((esm.psgOut >> 2) & 1u) + ((esm.psgOut >> 3) & 1u);
+    esm.aOut *= ((float)esm.globVolume/255);
 }
 
 uint16_t ESM::getSampleAddrBus() {
