@@ -29,4 +29,4 @@ void win_demo(bool* open);
 void win_osc(bool* open);
 void bufferUpdate();
 
-void obj_sqrBit(float size, bool state, ImVec2 org);
+void obj_bit(float width, float height, bool state, ImVec2 org);
