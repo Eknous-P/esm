@@ -150,6 +150,24 @@ void win_interPins(bool* open) {
                 sprintf(strbuf, "%x", esm.getToneCounter(a));
                 ImGui::Text(strbuf);
             }
+            for (uint8_t a=0;a<4;a++) {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::AlignTextToFramePadding();
+                ImGui::Text("TONE CONFIG #%d",a);
+                ImGui::TableNextColumn();
+                p = ImGui::GetCursorScreenPos();
+                x = p.x;
+                for (uint8_t i=16; i>0; i--) {
+                    bool bits[16];
+                    bits[i] = ((esm.getToneConf(a) >> (i-1)) & 1u) == 1;    
+                    obj_sqrBit(size,bits[i],ImVec2(x,p.y));
+                    x += dist;
+                }
+                ImGui::TableNextColumn();
+                sprintf(strbuf, "%x", esm.getToneConf(a));
+                ImGui::Text(strbuf);
+            }
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
             ImGui::AlignTextToFramePadding();

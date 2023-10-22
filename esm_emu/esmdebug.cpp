@@ -128,7 +128,10 @@ void ESM::tones() {
 }
 
 void ESM::mixAnalog() {
-    esm.aOut = ((esm.psgOut >> 0) & 1u) + ((esm.psgOut >> 1) & 1u) + ((esm.psgOut >> 2) & 1u) + ((esm.psgOut >> 3) & 1u);
+    esm.aOut = 0;
+    for (uint8_t i=0; i<4; i++) {
+        esm.aOut += ((float)((esm.psgOut >> i) & 1u) * ((float)((esm.toneConf[i] >> 12) & 0xf)))/15;
+    }
     esm.aOut *= ((float)esm.globVolume/255);
 }
 
