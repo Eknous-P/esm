@@ -3,8 +3,6 @@
 #include <cstdint>
 #include <cstdio>
 
-char strbuf[8];
-
 void win_demo(bool* open) {ImGui::ShowDemoWindow(open);}
 
 void win_regStat(bool* open) {
@@ -17,13 +15,11 @@ void win_regStat(bool* open) {
             for (uint8_t i=0; i<16; i++) {
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                sprintf(strbuf, "%b", i);
-                ImGui::Text(strbuf);
+                ImGui::Text("%b",i);
                 ImGui::TableNextColumn();
-                sprintf(strbuf, "%b", esm.getRegStat(i));
-                ImGui::Text(strbuf);
+                ImGui::Text("%b",esm.getRegStat(i));
                 ImGui::TableNextColumn();
-                ImGui::Text(regDesc[i]);
+                ImGui::Text("%s",regDesc[i]);
             }
             ImGui::EndTable();
         }
@@ -70,8 +66,7 @@ void win_interPins(bool* open) {
                 x += dist;
             }
             ImGui::TableNextColumn();
-            sprintf(strbuf, "%x", esm.getToneOut());
-            ImGui::Text(strbuf);
+            ImGui::Text("%x",esm.getToneOut());
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
             ImGui::AlignTextToFramePadding();
@@ -86,8 +81,7 @@ void win_interPins(bool* open) {
                 x += dist;
             }
             ImGui::TableNextColumn();
-            sprintf(strbuf, "%x", esm.getRandOut());
-            ImGui::Text(strbuf);
+            ImGui::Text("%x",esm.getRandOut());
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
             ImGui::AlignTextToFramePadding();
@@ -102,8 +96,7 @@ void win_interPins(bool* open) {
                 x += dist;
             }
             ImGui::TableNextColumn();
-            sprintf(strbuf, "%x", esm.getPC());
-            ImGui::Text(strbuf);
+            ImGui::Text("%x",esm.getPC());
             for (uint8_t a=0;a<4;a++) {
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
@@ -130,8 +123,7 @@ void win_interPins(bool* open) {
                     }
                 }
                 ImGui::TableNextColumn();
-                sprintf(strbuf, "%x", esm.getLFSR(a));
-                ImGui::Text(strbuf);
+                ImGui::Text("%x",esm.getLFSR(a));
             }
             for (uint8_t a=0;a<4;a++) {
                 ImGui::TableNextRow();
@@ -148,8 +140,7 @@ void win_interPins(bool* open) {
                     x += dist;
                 }
                 ImGui::TableNextColumn();
-                sprintf(strbuf, "%x", esm.getToneCounter(a));
-                ImGui::Text(strbuf);
+                ImGui::Text("%x",esm.getToneCounter(a));
             }
             for (uint8_t a=0;a<4;a++) {
                 ImGui::TableNextRow();
@@ -166,8 +157,7 @@ void win_interPins(bool* open) {
                     x += dist;
                 }
                 ImGui::TableNextColumn();
-                sprintf(strbuf, "%x", esm.getToneConf(a));
-                ImGui::Text(strbuf);
+                ImGui::Text("%x",esm.getToneConf(a));
             }
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
@@ -183,8 +173,7 @@ void win_interPins(bool* open) {
                 x += dist;
             }
             ImGui::TableNextColumn();
-            sprintf(strbuf, "%x", esm.getSampleAddrBus());
-            ImGui::Text(strbuf);
+            ImGui::Text("%x",esm.getSampleAddrBus());
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
             ImGui::AlignTextToFramePadding();
@@ -199,8 +188,7 @@ void win_interPins(bool* open) {
                 x += dist;
             }
             ImGui::TableNextColumn();
-            sprintf(strbuf, "%x", esm.getPSGOut());
-            ImGui::Text(strbuf);
+            ImGui::Text("%x",esm.getPSGOut());
         
             ImGui::EndTable();
         }
