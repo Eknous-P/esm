@@ -176,7 +176,7 @@ uint32_t ESM::getLFSR(uint8_t n) {
 }
 
 uint8_t ESM::getRandOut() {
-    return (esm.lfsr[0] & 0xff);
+    return (esm.lfsr[0] & 0x3f);
 }
 
 uint8_t ESM::getRegStat(uint8_t reg) {

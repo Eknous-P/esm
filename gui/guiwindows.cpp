@@ -79,8 +79,8 @@ void win_interPins(bool* open) {
             ImGui::TableNextColumn();
             p = ImGui::GetCursorScreenPos();
             x = p.x;
-            for (uint8_t i=8; i>0; i--) {
-                bool bits[8];
+            for (uint8_t i=6; i>0; i--) {
+                bool bits[6];
                 bits[i] = ((esm.getRandOut() >> (i-1)) & 1u) == 1;
                 obj_bit(width,height,bits[i],ImVec2(x,p.y));
                 x += dist;
