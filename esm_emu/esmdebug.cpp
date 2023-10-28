@@ -232,6 +232,6 @@ char ESM::tick() {
     return 0;
 }
 
-const char * getEmuVersion() {
+const char * ESM::getEmuVersion() {
     return EMU_VERSION;
 }
