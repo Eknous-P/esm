@@ -231,3 +231,9 @@ void win_osc(bool* open) {
     ImGui::PlotLines("", outBuf4x, IM_ARRAYSIZE(outBuf4x), 0, NULL, 0.0f, 4.0f, ImGui::GetContentRegionAvail());
     ImGui::End();
 }
+
+void win_playground(bool* open) {
+    ImGui::Begin("PLAYGROUND", open);
+
+    ImGui::End();
+}

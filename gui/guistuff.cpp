@@ -31,6 +31,7 @@ bool open_interPins = true;
 bool open_ctl = true;
 bool open_demo = false;
 bool open_osc = true;
+bool open_playg = false;
 
 float outBuf[128]={};
 float outBuf4x[512]={};

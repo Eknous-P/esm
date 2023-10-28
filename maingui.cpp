@@ -118,6 +118,7 @@ int main(int, char**)
         if (open_ctl) win_ctl(&open_ctl);
         if (open_demo) win_demo(&open_demo);
         if (open_osc) win_osc(&open_osc);
+        if (open_playg) win_playground(&open_playg);
 
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Windows")) {
@@ -127,6 +128,7 @@ int main(int, char**)
                 ImGui::MenuItem("CONTROL", NULL, &open_ctl);
                 ImGui::MenuItem("DEMO", NULL, &open_demo);
                 ImGui::MenuItem("OSC", NULL, &open_osc);
+                ImGui::MenuItem("PLAYGROUND", NULL, &open_playg);
 
                 ImGui::EndMenu();
             }

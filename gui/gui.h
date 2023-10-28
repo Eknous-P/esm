@@ -15,6 +15,7 @@ extern bool open_interPins;
 extern bool open_ctl;
 extern bool open_demo;
 extern bool open_osc;
+extern bool open_playg;
 
 extern ESM esm;
 
@@ -27,6 +28,7 @@ void win_interPins(bool* open);
 void win_ctl(bool* open);
 void win_demo(bool* open);
 void win_osc(bool* open);
+void win_playground(bool* open);
 void bufferUpdate();
 
 void obj_bit(float width, float height, bool state, ImVec2 org);
