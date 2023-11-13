@@ -3,17 +3,15 @@ cmake_minimum_required(VERSION 3.25)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-set(SRC_DIR "src")
-set(IMGUI_DIR "imgui")
-set(EMU_DIR "$src/esm_emu")
-set(GUI_DIR "$src/gui")
-
-set(LIBS_CLFLAGS)
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(IMGUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/imgui")
+set(EMU_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/esm_emu")
+set(GUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/gui")
 
 project(ESM VERSION 1.1)
 
-set(EMU_FILES
-    "${EMU_DIR}/esm_debug.cpp")
+set(EMU_FILES 
+    "${EMU_DIR}/esmdebug.cpp")
 
 set(IMGUI_FILES
     "${IMGUI_DIR}/imgui.cpp"
@@ -35,20 +33,20 @@ set(CLI_FILES
 
 add_executable(ESM "${SRC_DIR}/main.cpp")
 
-target_link_libraries(ESM PUBLIC 
-    "${ESM_FILES}"
+target_include_directories(ESM PUBLIC 
+    "${EMU_DIR}"
+    "${IMGUI_DIR}"
+    "${GUI_DIR}"
+    "${SRC_DIR}")
+
+target_link_libraries(ESM PUBLIC
+    "${EMU_FILES}"
     "${IMGUI_FILES}"
     "${GUI_FILES}"
     "${CLI_FILES}")
 
-target_include_directories(ESM PRIVATE
-    "${EMU_DIR}"
-    "${IMGUI_DIR}"
-    "${GUI_DIR}"
-    "{PROJECT_BINARY_DIR}")
-
 if(LINUX)
-    message("target: linux")
+    message("\ntarget: linux\n")
     add_definitions("-lGL `pkg-config --static --libs glfw3`")
-    target_compile_definitions(ESM PRIVATE "`pkg-config --cflags glfw3`")
+    target_compile_definitions(ESM PUBLIC "`pkg-config --cflags glfw3`")
 endif()
