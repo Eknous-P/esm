@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <string>
 #include "esmdebug.h"
 #include "imgui.h"
 
@@ -32,3 +33,5 @@ void win_playground(bool* open);
 void bufferUpdate();
 
 void obj_bit(float width, float height, bool state, ImVec2 org);
+
+std::string toBin(uint32_t n);

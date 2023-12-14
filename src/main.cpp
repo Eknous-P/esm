@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
             if (argv[1] == "-cli") {
                 return run_cli();
             }
+            return 1;
         }
         default: {
             return start_gui();

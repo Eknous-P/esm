@@ -37,7 +37,7 @@ static void glfw_error_callback(int error, const char* description)
 }
 
 // Main code
-int start_gui(int, char**)
+int start_gui()
 {
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())

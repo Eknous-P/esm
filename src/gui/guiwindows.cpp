@@ -15,9 +15,9 @@ void win_regStat(bool* open) {
             for (uint8_t i=0; i<16; i++) {
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                ImGui::Text("%b",i);
+                ImGui::Text("%s",toBin(i).c_str());
                 ImGui::TableNextColumn();
-                ImGui::Text("%b",esm.getRegStat(i));
+                ImGui::Text("%s",toBin(esm.getRegStat(i)).c_str());
                 ImGui::TableNextColumn();
                 ImGui::Text("%s",regDesc[i]);
             }

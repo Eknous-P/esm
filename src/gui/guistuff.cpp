@@ -38,3 +38,8 @@ float outBuf4x[512]={};
 
 ESM esm;
 
+std::string toBin(uint32_t n) { // i hate that ive had to do this
+    std::string r;
+    while(n!=0) {r=(n%2==0 ?"0":"1")+r; n/=2;}
+    return r;
+}

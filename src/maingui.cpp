@@ -51,5 +51,5 @@ int run_gui() {
             ImGui::EndMainMenuBar();
         }
 
-
+    return 0;
 }
