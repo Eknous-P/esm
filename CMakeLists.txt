@@ -38,9 +38,9 @@ list(APPEND SRCS ${GUI_FILES})
 list(APPEND SRCS ${CLI})
 
 add_executable(ESM ${SRC_DIR}/main.cpp)
-target_sources(ESM PUBLIC ${SRCS})
+target_sources(ESM PRIVATE ${SRCS})
 
-target_link_directories(ESM PUBLIC
+target_include_directories(ESM SYSTEM PRIVATE
     ${EMU_DIR}
     ${IMGUI_DIR}
     ${IMGUI_DIR}/backends
@@ -48,7 +48,7 @@ target_link_directories(ESM PUBLIC
     ${SRC_DIR}
 )
 
-target_link_libraries(ESM PUBLIC
+target_link_libraries(ESM PRIVATE
     ${EMU_FILES}
     ${IMGUI_FILES}
     ${GUI_FILES}
@@ -57,9 +57,11 @@ target_link_libraries(ESM PUBLIC
 
 if(LINUX)
     message("\ntarget: linux\n")
-    execute_process(COMMAND pkg-config --static --libs glfw3 RESULT_VARIABLE GLFW_LIBS)
-    execute_process(COMMAND pkg-config --cflags glfw3 RESULT_VARIABLE GFFW_FLAGS)
 
-    target_link_options(ESM PUBLIC ${GLFW_LIBS})
-    target_compile_options(ESM PUBLIC ${GLFW_FLAGS})
+    set(LINUX_GL_LIBS -lGL)
+    execute_process(COMMAND pkg-config --static --libs glfw3 RESULT_VARIABLE GLFW_LIBS)
+    execute_process(COMMAND pkg-config --cflags glfw3 RESULT_VARIABLE GLFW_FLAGS)
+
+    target_link_options(ESM PRIVATE ${LINUX_GL_LIBS} ${GLFW_LIBS})
+    target_compile_options(ESM PRIVATE ${GLFW_FLAGS})
 endif()
