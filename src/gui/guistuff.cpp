@@ -1,5 +1,4 @@
 #include "gui.h"
-#include <cstdint>
 
 const char * regDesc[16] = {
     "TONE 1 CONFIG 1",
@@ -21,7 +20,6 @@ const char * regDesc[16] = {
 };
 
 uint8_t u8_one = 1u;
-uint8_t reg = 0, dat = 0;
 
 bool emuRunning = false;
 
@@ -35,11 +33,3 @@ bool open_playg = false;
 
 float outBuf[128]={};
 float outBuf4x[512]={};
-
-ESM esm;
-
-std::string toBin(uint32_t n) { // i hate that ive had to do this
-    std::string r;
-    while(n!=0) {r=(n%2==0 ?"0":"1")+r; n/=2;}
-    return r;
-}

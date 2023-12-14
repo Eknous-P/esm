@@ -1,6 +1,4 @@
 #include "gui.h"
-#include "main.h"
-#include <cstdint>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
